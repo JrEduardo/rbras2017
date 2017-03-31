@@ -1,0 +1,111 @@
+%-----------------------------------------------------------------------
+%% Preamble by organize commitee
+
+\documentclass[12pt, a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{url} % hyper links
+\usepackage{enumerate}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amsxtra}
+\usepackage{bm}
+\usepackage[alf, bibjustif, abnt-etal-list=0]{abntex2cite}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{$62^{\textrm{a}}$ RBras e $17^{\textrm{0}}$ SEAGRO }
+\rhead{24 a 28 de julho de 2017, Lavras - MG}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\addtolength{\headheight}{12.0pt}
+
+%-------------------------------------------
+% Aditional latex packages
+\usepackage[bottom]{footmisc}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{tabularx}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\DeclareRobustCommand{\rchi}{{\mathpalette\irchi\relax}}
+\newcommand{\irchi}[2]{\raisebox{\depth}{$#1\chi$}}
+\usepackage{float}
+\makeatletter
+\def\@xfootnote[#1]{%
+  \protected@xdef\@thefnmark{#1}%
+  \@footnotemark\@footnotetext}
+\makeatother
+
+%-----------------------------------------------------------------------
+%% Init the document
+
+\begin{document}
+\onehalfspacing
+
+%-------------------------------------------
+%% Title
+\begin{center}
+\begin{center}
+\textbf{\Large{Reparametrization of COM-Poisson Regression Models with
+    Applications in the Analysis of Experimental Count Data}}\\[1em]
+\end{center}
+\end{center}
+\vspace*{0.2cm}
+
+% -------------------------------------------
+%% Authors
+\begin{flushright}
+  {\bf Eduardo Elias Ribeiro Junior}
+  \footnote[$\dagger$]{Contato \textit{jreduardo@usp.br}}
+  \footnote[1]{Departamento de Ciências Exatas (LCE) - ESALQ-USP}
+  \footnote[3]{Laboratório de Estatística e Geoinformação (LEG) -
+    UFPR}\\
+  {\bf Walmes Marques Zeviani} \footnote[2]{
+    Despartamento de Estatística (DEST) - UFPR} \footnotemark[3]\\
+  {\bf Wagner Hugo Bonat} \footnotemark[2] \footnotemark[3]\\
+  {\bf Clarice Garcia Borges Demétrio} \footnotemark[1]
+\end{flushright}
+
+\vspace*{0.5cm}
+
+%-------------------------------------------
+%% Body
+
+\noindent
+Dados de contagem são frequentes em estudos experimentais. Para análise
+desses dados, o modelo de regressão Poisson é largamente utilizado
+porém, devido a sua suposição de equidispersão é inadequado para
+diversas situações. Uma alternativa paramétrica para análise de
+contagens não equidispersas é o modelo COM-Poisson que, com a adição de
+um parâmetro, contempla os casos de sub e superdispersão. O modelo
+COM-Poisson pertence à família exponencial de distribuições e tem como
+casos particulares o modelo Poisson e geométrico e como caso limite o
+modelo binomial. Sua principal desvantagem é que a média e variância da
+distribuição não têm forma fechada, ou seja, não há um parâmetro de
+média da distribuição. Nesse artigo propõe-se uma reparametrização do
+modelo COM-Poisson reescrevendo a média da distribuição como função dos
+parâmetros originais, a partir de uma aproximação. O emprego do modelo
+reparametrizado é ilustrado com aplicações e seus resultados são
+comparados com os modelos Poisson, COM-Poisson padrão e
+quasi-Poisson. Os resultados mostraram que o modelo Poisson é de fato
+restritivo. O modelo COM-Poisson, por sua vez, mostrou-se bastante
+flexível apresentando resultados similares aos obtidos via abordagem
+quasi-Poisson. Nos estudos de caso, observou-se a ortogonalidade
+empírica entre os parâmetros de precisão e média do modelo COM-Poisson
+reparametrizado, o que tornou o procedimento computacional para ajuste
+mais rápido. Outra vantagem é que os parâmetros de média podem ser
+interpretados como razão de taxas, assim como ocorre no modelo
+Poisson. De forma geral, os resultados apresentados pelos modelos
+COM-Poisson reparametrizados foram satisfatórios e superiores às
+abordagens convencionais. Sendo assim incentiva-se seu uso na análise de
+dados de contagem.
+\\
+
+\noindent{\bf Keywords}: {\it Dados de contagem, Superdispersão,
+  Subdispersão, modelo COM-Poisson, Inferência baseada em
+  verossimilhança.}.\\
+
+\end{document}

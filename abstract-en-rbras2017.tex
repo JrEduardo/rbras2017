@@ -1,0 +1,90 @@
+%-----------------------------------------------------------------------
+%% Preamble by organize commitee
+
+\documentclass[12pt, a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{url} % hyper links
+\usepackage{enumerate}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amsxtra}
+\usepackage{bm}
+\usepackage[alf, bibjustif, abnt-etal-list=0]{abntex2cite}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{$62^{\textrm{a}}$ RBras e $17^{\textrm{0}}$ SEAGRO }
+\rhead{24 a 28 de julho de 2017, Lavras - MG}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\addtolength{\headheight}{12.0pt}
+
+%-------------------------------------------
+% Aditional latex packages
+\usepackage[bottom]{footmisc}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{tabularx}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\DeclareRobustCommand{\rchi}{{\mathpalette\irchi\relax}}
+\newcommand{\irchi}[2]{\raisebox{\depth}{$#1\chi$}}
+\usepackage{float}
+\makeatletter
+\def\@xfootnote[#1]{%
+  \protected@xdef\@thefnmark{#1}%
+  \@footnotemark\@footnotetext}
+\makeatother
+
+%-----------------------------------------------------------------------
+%% Init the document
+
+\begin{document}
+\onehalfspacing
+
+%-------------------------------------------
+%% Title
+\begin{center}
+\begin{center}
+\textbf{\Large{Reparametrization of COM-Poisson Regression Models with
+    Applications in the Analysis of Experimental Count Data}}\\[1em]
+\end{center}
+\end{center}
+\vspace*{0.2cm}
+
+% -------------------------------------------
+%% Authors
+\begin{flushright}
+  {\bf Eduardo Elias Ribeiro Junior}
+  \footnote[$\dagger$]{Contato \textit{jreduardo@usp.br}}
+  \footnote[1]{Departamento de Ciências Exatas (LCE) - ESALQ-USP}
+  \footnote[3]{Laboratório de Estatística e Geoinformação (LEG) -
+    UFPR}\\
+  {\bf Walmes Marques Zeviani} \footnote[2]{
+    Despartamento de Estatística (DEST) - UFPR} \footnotemark[3]\\
+  {\bf Wagner Hugo Bonat} \footnotemark[2] \footnotemark[3]\\
+  {\bf Clarice Garcia Borges Demétrio} \footnotemark[1]
+\end{flushright}
+
+\vspace*{0.5cm}
+
+%-------------------------------------------
+%% Body
+
+\noindent
+The COM-Poisson model generalized the Poisson model for handling over
+and underdispersed counts. This article proposes a
+mean-parameterization of COM-Poisson model. The results shows that the
+new parameterization is appropriate and offers better results than
+conventional approaches. The empirical orthogonality between precision
+and regression parameters, consequently less time to computing, and the
+interpretation are the main advantagens of mean-parameterization
+COM-Poisson model.
+
+\noindent{\bf Keywords}: {\it Count data, Overdispersion,
+  Underdispersion, COM-Poisson model, Likelihood inference.}.\\
+
+\end{document}
