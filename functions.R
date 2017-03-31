@@ -258,7 +258,7 @@ getCoefs <- function(model, digits = 3, rownames = NULL) {
     if (!is.null(rownames)) {
         rownames(est) <- rownames
     }
-    colnames(est) <- c("Estimate", "Est/EP")
+    colnames(est) <- c("Est", "Est/EP")
     return(est)
 }
 

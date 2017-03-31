@@ -18,7 +18,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{$62^{\textrm{a}}$ RBras e $17^{\textrm{0}}$ SEAGRO }
-\rhead{24 à 28 de julho de 2017, Lavras - MG}
+\rhead{24 a 28 de julho de 2017, Lavras - MG}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 \addtolength{\headheight}{12.0pt}
@@ -115,6 +115,7 @@ cols <- trellis.par.get("superpose.line")$col
 %% Body
 
 \section{Introdução}
+\label{sec:intro}
 
 Variáveis aleatórias de contagem são de natureza discreta e representam
 o número de ocorrências de um evento em um domínio discreto ou
@@ -157,17 +158,17 @@ Para análise de dados de contagens não equidispersos existem diversas
 alternativas. No caso de superdispersão destacam-se os modelos que
 incluem efeitos aleatórios a nível de observação, considerando assim a
 heterogeneidade não observada. Um exemplo bem conhecido dessa prática é
-o modelo Poisson com efeitos aleatórios Gama, que resulta no modelo
-Binomial Negativo. Porém, outras escolhas para a distribuição dos
+o modelo Poisson com efeitos aleatórios gama, que resulta no modelo
+binomial negativo. Porém, outras escolhas para a distribuição dos
 efeitos aleatórios podem ser tomadas, como por exemplo o modelo
-Poisson-Tweedie \cite{Bonat2016} e Poisson Inversa-Gaussiana (PIG). Para
-o caso de subdispersão há os modelos da classe \textit{Duration
-  Dependence}, que flexibilizam a distribuição do tempo entre evento,
-assumida Exponencial no caso Poisson \cite{Winkelmann2008}. Um
-representante desses modelos é o \textit{Gamma-Count}, cujo a
-distribuição assumida é Gama \cite{Zeviani2014}. Uma outra abordagem
+Poisson-Tweedie \cite{Bonat2016}. Para
+o caso de subdispersão, modelos da classe \textit{Duration
+  Dependence} flexibilizam a distribuição do tempo entre eventos,
+assumida exponencial no caso Poisson \cite{Winkelmann2008}. Um
+representante dessa classe é o modelo \textit{Gamma-Count}, cujo a
+distribuição assumida é gama \cite{Zeviani2014}. Uma outra abordagem
 para dados sub e superdispersos, que têm sido de interesse em pesquisas
-da comunidade Estatística, é o modelo COM-Poisson
+da comunidade estatística, é o modelo COM-Poisson
 \cite{Shmueli2005}. Esse modelo pertence a classe de modelos de
 distribuição ponderada de Poisson \cite{Sellers2012} que flexibilizam a
 suposição de linearidade da razão de probabilidades consecutivas,
@@ -175,29 +176,35 @@ permitindo caudas mais pesadas ou mais leves à distribuição
 \cite{RibeiroJr2016}.
 
 O modelo COM-Poisson pertence a família exponencial e tem como casos
-particulares os modelos Poisson e Geométrico e como caso limite o modelo
-Binomial. Algumas aplicações recentes do modelo COM-Poisson são
+particulares os modelos Poisson e geométrico e como caso limite o modelo
+binomial. Algumas aplicações recentes do modelo COM-Poisson são
 apresentadas por \citeonline{Lord2010}, para análise do número de
 acidentes de trânsito; por \citeonline{Sellers2010}, na modelagem do
 número de ampolas quebradas em fretes aéreos; e por
-\citeonline{RibeiroJr2016}, que apresenta aplicações do modelo
-COM-Poisson para análise de quatro experimentos planejados. A principal
-desvantagem desse modelo é que não há um parâmetro que represente a
-média da distribuição o que dificulta a interpretação dos coeficientes
-em um estrutura de modelo de regressão.
+\citeonline{RibeiroJr2016}, que apresenta aplicações para dados dados
+experimentais como o número de capulhos de algodão sob efeito de
+desfolha, número de capulhos de algodão sob efeito da infestação
+induzida de mosca branca, ocorrência de ninfas de mosca branca em
+lavoura de soja e número de grãos e vagens para difentes níveis de
+adubação potássica e umidade do solo. A principal desvantagem desse
+modelo é que não há um parâmetro que represente a média da distribuição
+o que dificulta a interpretação dos coeficientes em um estrutura de
+modelo de regressão.
 
 Nesse artigo nós propomos uma reparametrização do modelo COM-Poisson,
-incorporando um parâmetro de média ao modelo. Essa reparametrização
-apresenta as vantagens para interpretação e para ajuste dos modelos, uma
-vez que encontramos relação aproximadamente ortogonal dos parâmetros de
-média em relação ao parâmetro de precisão. Com aplicações para análise
-de dados experimentais, contemplando as situação de sup, super e
-equidispersão nós discutimos os aspectos do modelo COM-Poisson
-reparametrizado comparando-o com os modelos Poisson, COM-Poisson na
-parametrização original e Quasi-Poisson. Toda a análise é realizada em
-no \textit{software} R \cite{Rcore2016} e os códigos para ajuste e
-inferência dos modelos, bem como os conjuntos de dados, são
-disponibilizados em material suplementar \textit{online}.
+reescrevendo a média da distribuição como função dos parâmetros
+originais, a partir de uma aproximação dada por
+\citeonline{Shmueli2005}. Essa reparametrização apresenta vantagens para
+interpretação e para o ajuste do modelo, uma vez que encontramos uma
+relação aproximadamente ortogonal entre parâmetros de média e
+precisão. Com aplicações para análise de dados experimentais,
+contemplando as situação de sup, super e equidispersão nós discutimos os
+aspectos do modelo COM-Poisson reparametrizado comparando-o com os
+modelos Poisson, COM-Poisson na parametrização original e
+quasi-Poisson. Toda a análise é realizada no \textit{software} R
+\cite{Rcore2016} e os códigos para ajuste e inferência dos modelos, bem
+como os conjuntos de dados, são disponibilizados em material suplementar
+\textit{online}.
 
 \section{Metodologia}
 
@@ -261,7 +268,7 @@ xt <- xtabs(z ~ nu + lambda, data = grid)
 caption <- paste(
     "Valores calculados numericamente de $Z(\\lambda, \\nu)$",
     "para diferentes valores de $\\lambda$ (0,5 a 50) e $\\phi$",
-    "(0 a 1)")
+    "(0 a 1).")
 
 print(xtable(xt, digits = -2,
              caption = caption,
@@ -278,8 +285,8 @@ print(xtable(xt, digits = -2,
 
 Um inconveniente desse modelo é que os momentos média e variância não
 tem forma fechada. \citeonline{Shmueli2005}, a partir de uma aproximação
-para $Z(\lambda, \nu)$ apresentam uma forma aproximada para os dois
-primeiros momentos da distribuição
+para $Z(\lambda, \nu)$ apresentam uma forma aproximada para a média e
+variância de uma variável aleatória que segue o modelo COM-Poisson
 \begin{equation}
   \label{eqn:mean-aprox}
   E(Y) \approx \lambda^{1/\nu} - \frac{\nu - 1}{2\nu} \qquad
@@ -289,7 +296,7 @@ primeiros momentos da distribuição
 os autores ressaltam que essa aproximação é satisfatória para
 $\nu \leq 1$ ou $\lambda > 10^\nu$. \citeonline{Sellers2010} descrevem
 ainda que a relação média-variância pode ser aproximada por
-$\frac{1}{\nu}E(Y)$. Na Figura \ref{fig:approx-plot} (a) apresentamos a
+$\frac{1}{\nu}E(Y)$. Na Figura \ref{fig:approx-plot}(a) apresentamos a
 relação média-variância, com médias e variâncias calculadas
 numericamente para diferentes níveis de dispersão. É interessante notar
 o aspecto linear dessa relação.
@@ -302,18 +309,16 @@ reparametrização consiste na introdução do parâmetro $\mu$ definido como
   \mu = h(\lambda, \nu) = \lambda^{1/\nu} - \frac{\nu - 1}{2\nu}
   \quad \Rightarrow \quad
   \lambda = h^{-1}(\mu, \nu) = \left (\mu +
-    \frac{(\nu + 1)}{2\nu} \right )^\nu
+    \frac{(\nu + 1)}{2\nu} \right )^\nu.
 \end{equation}
 O parâmetro de precisão da distribuição é tomado na escala do logaritmo
 neperiano para evitar a restrição no espaço paramétrico, denotamos por
-$\phi$ esse novo parâmetro, ou seja, $\phi = \log(\nu) \Rightarrow
-\phi \in \mathbb{R}$. Para esse parâmetro as interpretações são como se
-segue
-$$
-\phi < 0 \Rightarrow \textrm{Superdispersão}; \quad
-\phi = 0 \Rightarrow \textrm{Equidispersão}; \textrm{ e} \quad
-\phi > 0 \Rightarrow \textrm{Subdispersão}
-$$
+$\phi$ esse novo parâmetro, ou seja,
+$\phi = \log(\nu), \phi \in \mathbb{R}$. Esse parâmetro possui a mesma
+interpretação de $\nu$, porém em uma escala diferente. Para $\phi < 0$
+temos o caso de superdispersão, para $\phi > 0$ subdispersão e para
+$\phi=0$ equidispersão, caso particular em que a COM-Poisson se resume a
+Poisson.
 
 Substituindo os novos parâmetros, definidos em (\ref{eqn:repar-cmp}), na
 função massa de probabilidade (\ref{eqn:pmf-cmp}) temos
@@ -322,14 +327,14 @@ função massa de probabilidade (\ref{eqn:pmf-cmp}) temos
   \Pr(Y=y \mid \mu, \phi) =
   \left ( \mu +\frac{ e^\phi-1}{2e^\phi} \right )^{ye^\phi}
   \frac{(y!)^{-e^\phi}}{Z(\mu, \phi)},
-  \qquad y = 0, 1, 2, \ldots
+  \qquad y = 0, 1, 2, \ldots\, .
 \end{equation}
 
 Denotamos a distribuição COM-Poisson reparametrizada por
 COM-Poisson$_\mu$.Na Figura \ref{fig:pmf-cmp} apresentamos distribuições
 de probabilidade para diferentes parâmetros ilustrando a flexibilidade
-da distribuição. As distribuições em vermelho representam o caso
-particular quando a COM-Poisson se resume a distribuição Poisson.
+da distribuição. As distribuições para $\phi=0$ representam o caso
+particular Poisson.
 
 <<pmf-cmp, fig.height=3, fig.width=7, fig.cap="Probabilidades pela distribuição COM-Poisson$_\\mu$ para diferentes parâmetros.">>=
 
@@ -387,16 +392,17 @@ barchart(py ~ y | factor(mu),
 
 Uma avaliação da acurácia das aproximações em (\ref{eqn:mean-aprox}) e
 consequentemente da reparametrização, é apresentada na Figura
-\ref{fig:approx-plot} (b) e (c) para valores de $\mu$ variando de 0 a 30
-e diferentes níveis de dispersão ($-1.2 < \log(\nu) < 1$). Em (b) temos
-os erros quadráticos para a média, $(\mu - E[X])^2$ e em (c) para a
-variância $(\frac{\mu}{\nu} - V[X])^2$, em que $E[X]$ e $V[X]$ são
-calculados numericamente usando a definição de momentos.  As linhas
+\ref{fig:approx-plot}(b) e \ref{fig:approx-plot}(b)(c) para valores de
+$\mu$ variando de 0 a 30 e diferentes níveis de dispersão
+($-1.2 < \phi < 1$). Em \ref{fig:approx-plot}(b) temos os erros
+quadráticos para a média, $(\mu - E[X])^2$ e em \ref{fig:approx-plot}(c)
+para a variância $(\frac{\mu}{\nu} - V[X])^2$, em que $E[X]$ e $V[X]$
+são calculados numericamente usando a definição de momentos.  As linhas
 tracejadas representam as restrições $\nu \leq 1$ ou $\lambda > 10^\nu$.
-Observa-se que a aproximação para a média é bem acurada (valores menores
+Observa-se que a aproximação para a média é acurada (valores menores
 que 0.03), porém tem perda de acurácia para combinações de $\nu$
 pequenos ($<0.35$) com médias também baixas ($\mu < 10$). Para a
-variância, gráfico (c), temos que a aproximação
+variância, gráfico \ref{fig:approx-plot}(c), temos que a aproximação
 $V[X] = \frac{\mu}{\nu}$, proposta por \citeonline{Sellers2010}, não tem
 bom desempenho para valores pequenos de $\nu$. A restrição que envolve e
 média da distribuição parece não ter relevância. De forma geral, para
@@ -513,38 +519,41 @@ sendo assim a reparametrização proposta adequada.
 Os modelos COM-Poisson padrão e reparametrizado são ajustados via
 maximização da verossimilhança. Para uma amostra independentes de
 contagens $y_i$, $i=1,2\ldots,n$, as estimativas para
-$\bm{\theta} = (\beta\,, \phi)$ são obtidas pelos argumentos que
+$\bm{\theta} = (\bm{\beta}\,, \phi)$ são obtidas pelos argumentos que
 maximizam a função de log-verossimilhança
 \begin{equation}
   \label{eqn:ll-rcmp}
-  \ell(\beta, \phi \mid \underline{y}) =
-  e^\phi \left [ \log \left( \mu_i + \frac{e^\phi-1}{2e^\phi} \right )
-    \sum_{i=1}^n y_i - \sum_{i=1}^n \log(y_i) \right ] -
-  \sum_{i=1}^n \log(Z(\mu_i, \phi))
+  \ell(\bm{\beta}, \phi \mid \bm{y}) =
+  e^\phi \left [
+    \sum_{i=1}^n y_i
+    \log \left( \mu_i + \frac{e^\phi-1}{2e^\phi} \right ) -
+    \sum_{i=1}^n \log(y_i!) \right ] -
+  \sum_{i=1}^n \log(Z(\mu_i, \phi)),
 \end{equation}
-em que $\mu_i = e^{\underline{x}_i^t\beta}$, com $\underline{x}_i$ o
+onde $\mu_i = \exp(\bm{x}_i^t\bm{\beta})$, sendo $\bm{x}_i$ o
 vetor $(x_{i1}, x_{i2}, \ldots x_{ip})$ de covariáveis da i-ésima
-observação, e $(\beta, \phi) \in \mathbb{R}^{p+1}$. A constante
+observação, e $(\bm{\beta}, \phi) \in \mathbb{R}^{p+1}$. A constante
 $Z(\mu_i, \phi)$ é calculada como
 $$
 Z(\mu_i, \phi) = \sum_{j=0}^\infty \left [ \left (
     \mu_i + \frac{e^\phi - 1}{2e^\phi} \right )^{je^\phi}
   \frac{1}{(j!)^{e^\phi}} \right ]
 $$
-Note que a avaliação da log-verossimilhança requer o cálculo de uma
-série infinita para cada observação, o que torna sua computação cara
-para regiões do espaço paramétrico cuja soma demora a convergir.
+A avaliação da log-verossimilhança requer o cálculo de uma série
+infinita para cada observação, o que torna sua computação cara para
+regiões do espaço paramétrico cuja soma demora a convergir.
 
 A estimação dos parâmetros requer a maximização numérica de
-(\ref{eq:ll-rcmp}). Como $\ell(\mu, \phi \mid \underline{y})$ não possui
-derivada analítica, a maximação é realizada pelo algoritmo BFGS
-\cite{Nocedal1995} que fornece estimativas numéricas para o vetor
+(\ref{eqn:ll-rcmp}). Como $\ell(\mu_i, \phi \mid \bm{y})$ não
+possui derivada analítica, a maximação é realizada pelo algoritmo BFGS
+\cite{Nocedal1995} que utiliza estimativas numéricas para o vetor
 gradiente $\mathcal{U}(\bm{\theta})$ e matriz hessiana
 $\mathcal{H}(\bm{\theta})$. Os erros padrão das estimativas são obtidos
 pela aproximação Normal da log-verossimilhança (método de Wald), fazendo
 $\sqrt{\bm{v}}$, em que $\bm{v}$ são os elementos da diagonal da matriz
-$-\mathcal{H}^{-1}(\bm{\theta})$. Intervalos de confiança para
-$\hat{\mu}_i$ são obtidos pelo método delta.
+$-\hat{\mathcal{H}}^{-1}(\bm{\theta})$, estimada pelo algoritmo
+BFGS. Intervalos de confiança para $\hat{\mu}_i$ são obtidos pelo método
+delta \cite{RibeiroJr2012}.
 
 Para o modelo COM-Poisson padrão o procedimento de ajuste é análogo ao
 apresentado, porém considerando a função de log-verossimilhança
@@ -554,24 +563,24 @@ logaritmo neperiano, para evitar a restrição do espaço paramétrico.
 
 A comparação dos modelos é realizada pelo valor maximizado da
 log-verossimilhança e pelos critérios de Akaike (AIC) e Bayesiano (BIC)
-que penalizam a log-verossimilhança pelo número de parâmetros.
+que penalizam a log-verossimilhança pelo número de parâmetros, ou seja,
 $$
-\textrm{AIC} = -2\ell(\hat{\bm{\theta}}, \underline{y}) + 2 p
+\textrm{AIC} = -2\ell(\hat{\bm{\theta}}, \bm{y}) + 2 p
 \quad \text{e} \quad
-\textrm{BIC} = -2\ell(\hat{\bm{\theta}}, \underline{y}) + \log(n) p
+\textrm{BIC} = -2\ell(\hat{\bm{\theta}}, \bm{y}) + \log(n) p.
 $$
 
-Nas aplicações também utilizamos a abordagem por quasi-Poisson
+Nas aplicações também utilizamos a abordagem quasi-Poisson
 \cite{Wedderburn1974} como modelo de referência. Essa abordagem é uma
 especificação de momentos e acomoda sub e superdispersão corrigindo a
 variância de $y_i$ pelo parâmetro adicional $\sigma$,
-$V(y_i)=\sigma V(\mu_i)$. Esses modelos são ajustados no \textit{software} R
-\cite{Rcore2016}, com a função \texttt{glm(..., family = quasipoisson)}.
+$V(Y_i)=\sigma \mu_i$. Esses modelos são ajustados no \textit{software}
+R \cite{Rcore2016}, com a função \texttt{glm(..., family =
+  quasipoisson)}.
 
 \section{Análise de Dados Experimentais}
 
-\subsection{Caso subdisperso: Experimento de desfolha artificial
-  em capulhos de algodão}
+\subsection{Desfolha artificial em capulhos de algodão}
 
 <<data-cotton, include=FALSE>>=
 
@@ -636,10 +645,11 @@ exibidos na Tabela \ref{tab:coef-cotton}.
 \begin{table}[h]
 \centering
 \small
-\caption{Estimativas dos parâmetros e razões entre as estimativa e erro
-  padrão para os quatro modelos ajustados aos dados subdispersos}
+\caption{Estimativas dos parâmetros (Est) e razões entre as estimativa
+  e erro padrão (EP) para os quatro modelos ajustados aos dados
+  subdispersos.}
 \label{tab:coef-cotton}
-\begin{tabular}{lcccccccc}
+\begin{tabularx}{\textwidth}{lCCCCCCCC}
   \toprule
   & \multicolumn{2}{c}{Poisson} &
     \multicolumn{2}{c}{COM-Poisson} &
@@ -661,7 +671,7 @@ est <- lapply(models.ncap, FUN = function(x) getCoefs(x))
 est.ncap <- do.call(cbind, est)
 
 ## Organize in table
-pnames <- c("\\phi\\,\\sigma^2", "\\beta_0",
+pnames <- c("\\phi\\,,\\,\\sigma^2", "\\beta_0",
             paste0("\\beta_{1", 1:5, "}"),
             paste0("\\beta_{2", 1:5, "}"))
 rownames(est.ncap) <- paste0("$", pnames, "$")
@@ -686,13 +696,13 @@ print.xtable(xtable(est.ncap, digits = 3,
              add.to.row = append_gof)
 
 @
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 Os resultados apresentados na Tabela \ref{tab:coef-cotton} mostram as
 medidas de qualidade de ajuste (verossimilhança maximizada, AIC e BIC)
-dos modelos COM-Poisson praticamente idênticas. O ajuste modelo Poisson
-é claramente inferior aos demais. A diferença entre as
+dos modelos COM-Poisson praticamente idênticas. O ajuste do modelo
+Poisson é claramente inferior aos demais. A diferença entre as
 log-verossimilhanças dos modelos Poisson e COM-Poisson$_\mu$ foi de
 \Sexpr{lrt.ncap[2, 4]}, que quando comparada com a distribuição
 Qui-Quadrado com 1 grau de liberdade, mostram que os modelos são
@@ -700,11 +710,11 @@ significativamente diferentes ($\phi \neq 0$). O valor estimado para
 $\phi$ foi de \Sexpr{co1[1]}, evidenciando a subdispersão das contagens.
 
 Ainda na Tabela \ref{tab:coef-cotton} podemos ver a vantagem do modelo
-COM-Poisson$_\mu$ reparametrizado, pois as estimativas pontuais são
+COM-Poisson$_\mu$ (reparametrizado), pois as estimativas pontuais são
 muito similares às obtidas no modelo Poisson enquanto que, para o
 COM-Poisson essas estimativas estão em uma escala não interpretável. As
 razões entre estimativa e erro padrão sob os modelos COM-Poisson são
-muito similares entre à abordagens Quasi-Poisson, porém com a vantagem
+muito similares entre à abordagens quasi-Poisson, porém com a vantagem
 de se ter uma distribuição de probabilidades associada às contagens.
 
 Na Figura \ref{fig:pred-cotton} nós apresentamos as curvas de predição
@@ -792,13 +802,13 @@ xyplot(ncap ~ des | est,
 
 @
 
-Na Tabela \ref{tab:corr-cotton} apresentamos as correlações do parâmetro
-$\phi$ com os demais parâmetros de regressão $\bm{\beta}$, calculadas a
-partir da matriz de covariâncias, para os modelos COM-Poisson e
-COM-Poisson$_\mu$. As correlações são praticamente nulas quando
-considerado o modelo reparametrizado, indicando que esta
-reparametrização ortogonaliza o parâmetro extra da COM-Poisson com os
-parâmetros de regressão.
+Na Tabela \ref{tab:corr-cotton} apresentamos as correlações entre
+$\hat{\phi}$ e $\bm{\hat{\beta}}$, calculadas a partir da matriz de
+covariâncias, para os modelos COM-Poisson e COM-Poisson$_\mu$. As
+correlações são praticamente nulas quando considerado o modelo
+reparametrizado, indicando que esta reparametrização praticamente
+ortogonaliza o parâmetro extra da COM-Poisson com os parâmetros de
+regressão, nesse particular conjunto de dados.
 
 <<corr-cotton, results="asis">>=
 
@@ -810,10 +820,10 @@ corr.ncap <- do.call("rbind",
 
 ## Organize on table
 rownames(corr.ncap) <- paste0("COM-Poisson", c("", "$_\\mu$"))
-colnames(corr.ncap) <- paste0("$", pnames[-1], "$")
+colnames(corr.ncap) <- paste0("$\\hat{", pnames[-1], "}$")
 
-caption <- paste("Correlações empírica entre $\\hat{\\phi}$ e os",
-                 "parâmetros de locação $\\bm{\\beta}$ para",
+caption <- paste("Correlações empírica entre $\\hat{\\phi}$ e",
+                 "$\\hat{\\bm{\\beta}}$ para",
                  "os modelos ajustados aos dados subdispersos.")
 print(xtable(corr.ncap,
              align = c("lccccccccccc"),
@@ -823,8 +833,7 @@ print(xtable(corr.ncap,
 
 @
 
-\subsection{Caso superdisperso: Experimento de dose potássica e umidade
-  do solo em produtividade de soja}
+\subsection{Dose potássica e umidade do solo em produtividade de soja}
 \label{sec:cotton}
 
 <<load-soya, include=FALSE>>=
@@ -926,11 +935,12 @@ dispersão dos dados onde podemos notar que há um efeito quadrático do
 nível de adubação potássica. À direita são apresentadas as médias e
 variâncias amostrais, a linha tracejada representa a reta identidade
 (suposição de equidispersão) e a contínua a reta de mínimos quadrados. A
-maioria dos pontos estão dispostos acima da linha tracejada, indicando a
-superdispersão das contagens.
+maioria dos pontos estão dispostos acima da linha tracejada, indicando
+superdispersão.
 
 Na modelagem desse conjunto de dados nós propomos, com base na análise
-descritiva (Figura \ref{fig:desc-soya}), o preditor linear
+descritiva (gráfico à esquerda na Figura \ref{fig:desc-soya}), o
+seguinte preditor linear
 $$
 \log(\mu_{ijk}) = \beta_0 + \gamma_i + \tau_j +
   \beta_{1}\texttt{K}_k + \beta_{2}\texttt{K}_k^2 +
@@ -945,14 +955,14 @@ do solo (\texttt{umid}).
 Na Tabela \ref{tab:coef-soya} são apresentas as estimativas dos
 parâmetros bem como os valores padronizados pelos seus respectivos erros
 padrão e medidas de qualidade de ajuste para todos os modelos em
-estudo. Assim como na seção \ref{sec:cotton}, os modelos COM-Poisson
+estudo. Assim como na Seção \ref{sec:cotton}, os modelos COM-Poisson
 apresentaram medidas de qualidade de ajuste muito próximas e melhores do
 que as obtidas pelo modelo Poisson. O parâmetro de precisão $\phi$
 estimado no modelo COM-Poisson$_\mu$ foi de \Sexpr{co2[1]}, e a
 diferença das log-verossimilhanças dos modelos Poisson e
 COM-Poisson$_\mu$ foi \Sexpr{lrt.ngra[2, 4]} indicando que $\phi$ é
 significativamente diferente de 0. Quanto as estimativas e razões entre
-estimativa e erros padrão as interpretações são análogas da seção
+estimativas e erros padrão as interpretações são análogas da seção
 anterior. Ambos os modelos são concordantes quanto a indicação de
 significância dos efeitos, porém o modelo Poisson indica efeitos com
 maior significância por não se adequar a variabilidade extra.
@@ -960,10 +970,10 @@ maior significância por não se adequar a variabilidade extra.
 \begin{table}[ht]
 \centering
 \small
-\caption{Estimativas dos parâmetros e razões entre as estimativa e erro
-  padrão dos quatro modelos ajustados aos dados de soja}
+\caption{Estimativas dos parâmetros (Est) e razões entre as estimativ
+  e erro padrão (EP) dos quatro modelos ajustados aos dados de soja.}
 \label{tab:coef-soya}
-\begin{tabular}{lcccccccc}
+\begin{tabularx}{\textwidth}{lCCCCCCCC}
   \toprule
   & \multicolumn{2}{c}{Poisson} &
     \multicolumn{2}{c}{COM-Poisson} &
@@ -985,7 +995,7 @@ est <- lapply(models.ngra, FUN = function(x) getCoefs(x))
 est.ngra <- do.call(cbind, est)
 
 ## Organize in table
-pnames <- c("\\phi\\,\\sigma^2", "\\beta_0",
+pnames <- c("\\phi\\,,\\,\\sigma^2", "\\beta_0",
             paste0("\\gamma_{", 1:4, "}"),
             paste0("\\tau_{", 1:2, "}"),
             "\\beta_1", "\\beta_2",
@@ -1013,7 +1023,7 @@ print.xtable(xtable(est.ngra, digits = 3,
              add.to.row = append_gof)
 
 @
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 Nos casos de superdispersão a avaliação da verossimilhança é mais cara,
@@ -1040,11 +1050,11 @@ corr.ngra <- do.call("rbind",
 
 ## Organize on table
 rownames(corr.ngra) <- paste0("COM-Poisson", c("", "$_\\mu$"))
-colnames(corr.ngra) <- paste0("$", pnames[-1], "$")
+colnames(corr.ngra) <- paste0("$\\hat{", pnames[-1], "}$")
 
-caption <- paste("Correlações empírica entre $\\hat{\\phi}$ e os",
-                 "parâmetros de locação $\\bm{\\beta}$ para os ",
-                 "modelos ajustados aos dados superdispersos")
+caption <- paste("Correlações empírica entre $\\hat{\\phi}$ e",
+                 "$\\hat{\\bm{\\beta}}$ para os ",
+                 "modelos ajustados aos dados superdispersos.")
 print(xtable(corr.ngra,
              align = c("lccccccccccc"),
              caption = caption,
@@ -1133,8 +1143,7 @@ update(xy1, layout = c(NA, 1), type = c("p", "g"),
 
 @
 
-\subsection{Caso equidisperso: Experimento de nitrofeno em ambientes
-  aquáticos}
+\subsection{Nitrofeno em ambientes aquáticos}
 
 <<load-nitro, include=FALSE>>=
 
@@ -1205,8 +1214,8 @@ co3 <- coef(m3C2)
 @
 
 Para esse conjunto de dados testamos três preditores lineares a fim de
-avaliar o desempenho dos modelos em testes de razão de verossimilhanças
-para seleção de variáveis regressoras. Os preditores são
+avaliar o desempenho dos modelos usando o teste de razão de
+verossimilhança para seleção de covariáveis. Os preditores são
 
 \begin{center}
 \begin{minipage}{12cm}
@@ -1223,21 +1232,21 @@ ajuste e os testes de razão de verossimilhanças dos modelos constituídos
 dos três preditores lineares definidos acima. Todos os modelos indicam o
 efeito cúbico da dosagem do herbicida nas contagens de ovos
 eclodidos. Sob este preditor há evidências de equidispersão, estimativas
-$\hat{\phi}$ próximas a zero e $\hat{\sigma}$, da Quasi-Poisson,
+$\hat{\phi}$ próximas a zero e $\hat{\sigma}$, da quasi-Poisson,
 próxima a 1. É interessante notar que quando omitimos os efeitos de
 ordem maior no preditor, os modelos passam a acusar superdispersão, isso
-exemplifica o que foi discutido na seção \ref{sec:intro} sobre as causas
-da superdispersão. Outro aspecto que destacamos é que embora o modelo
-Quasi-Poisson seja robusto à não equidispersão, quando aplicado sob
+exemplifica o que foi discutido na Seção \ref{sec:intro} sobre as causas
+de superdispersão. Outro aspecto que destacamos é que embora o modelo
+quasi-Poisson seja robusto à não equidispersão, quando aplicado sob
 equidispersão apresentou nível descritivo maior que os modelos
-paramétricos, ou seja, os testes realizados sob o modelo Quasi-Poisson
+paramétricos, ou seja, os testes realizados sob o modelo quasi-Poisson
 são menos poderosos.
 
 \begin{table}[ht]
 \centering
 \small
 \caption{Medidas de ajuste para avaliação e comparação entre preditores
-  e modelos ajustados}
+  e modelos ajustados.}
 \label{tab:anova-ovos}
 \begin{tabularx}{\textwidth}{lCCCCCrC}
   \toprule
@@ -1331,10 +1340,11 @@ estamos no caso particular $\phi = 0$ o que implica que $\lambda = \mu$.
 \begin{table}[H]
 \centering
 \small
-\caption{Estimativas dos parâmetros e razões entre as estimativa e erro
-  padrão dos quatro modelos ajustados aos dados de ovos eclodidos}
+\caption{Estimativas dos parâmetros (Est) e razões entre as estimativa
+  e erro padrão (EP) dos quatro modelos ajustados aos dados de ovos
+  eclodidos.}
 \label{tab:coef-ovos}
-\begin{tabular}{lcccccccc}
+\begin{tabularx}{\textwidth}{lCCCCCCCC}
   \toprule
   & \multicolumn{2}{c}{Poisson} &
     \multicolumn{2}{c}{COM-Poisson} &
@@ -1356,7 +1366,7 @@ est <- lapply(models.ovos, FUN = function(x) getCoefs(x))
 est.ovos <- do.call(cbind, est)
 
 ## Organize in table
-pnames <- c("\\phi\\,\\sigma^2",  paste0("\\beta_{", 0:3, "}"))
+pnames <- c("\\phi\\,,\\,\\sigma^2",  paste0("\\beta_{", 0:3, "}"))
 
 rownames(est.ovos) <- paste0("$", pnames, "$")
 print.xtable(xtable(est.ovos, digits = 3,
@@ -1365,7 +1375,7 @@ print.xtable(xtable(est.ovos, digits = 3,
              only.contents = TRUE)
 
 @
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 Na Figura \ref{fig:pred-ovos} são exibidas as curvas de predição com
@@ -1469,11 +1479,11 @@ corr.ovos <- do.call("rbind",
 
 ## Organize on table
 rownames(corr.ovos) <- paste0("COM-Poisson", c("", "$_\\mu$"))
-colnames(corr.ovos) <- paste0("$", pnames[-1], "$")
+colnames(corr.ovos) <- paste0("$\\hat{", pnames[-1], "}$")
 
-caption <- paste("Correlações empírica entre $\\hat{\\phi}$ e os",
-                 "parâmetros de locação $\\bm{\\beta}$ para os ",
-                 "modelos ajustados aos dados equidispersos")
+caption <- paste("Correlações empírica entre $\\hat{\\phi}$ e",
+                 "$\\bm{\\hat{\\beta}}$ para os ",
+                 "modelos ajustados aos dados equidispersos.")
 print(xtable(corr.ovos,
              align = c("lCCCC"),
              caption = caption,
@@ -1485,10 +1495,9 @@ print(xtable(corr.ovos,
 
 @
 
-
 \section{Conclusões}
 
-Neste trabalho propomos o modelo COM-Poisson reparametrizado
+Neste artigo foi apresentado o modelo COM-Poisson reparametrizado
 (COM-Poisson$_\mu$) com base na aproximação da esperança da distribuição,
 para análise de dados de contagem sub, super e equidispersos
 provenientes de três experimentos planejados. Nas três aplicações o
@@ -1497,19 +1506,20 @@ os modelos Poisson e quasi-Poisson.
 
 Aspectos da aproximação para média e consequentemente da
 reparametrização proposta foram apresentados, mostrando que a
-reparametrização é adequada. Nas análises de dados observou-se
-característica de ortogonalidade entre os parâmetros de regressão e de
-precisão no modelo reparametrizado, algo que não ocorre para o modelo
-em sua parametrização original. Devido a essa característica o
-procedimento computacional é mais rápido sob o modelo
-reparametrizado. Outra vantagem, que favorece a reparametrização é que
-os parâmetros de regressão estimados têm interpretação de razão de
+reparametrização é adequada. Nas análises de dados observou-se a
+característica de ortogonalidade empírica entre os estimadores para os
+parâmetros de regressão e de precisão no modelo reparametrizado,
+observado pelas correlações praticamente nulas entre os estimadores,
+algo que não ocorre para o modelo em sua parametrização original. Devido
+a essa característica o procedimento computacional é mais rápido sob o
+modelo reparametrizado. Outra vantagem, que favorece a reparametrização
+é que os parâmetros de regressão estimados têm interpretação de razão de
 taxas, assim como ocorre no modelo Poisson.
 
 Os resultados sob os modelos COM-Poisson para as três situações (sub,
 super e equidispersão) apresentaram resultados similares à abordagem
-semi-paramétrica quasi-Poisson, porém com a vantagem de se adotar uma
-distribuição para as contagens possibilitando o cálculo de
+baseado em suposições de momentos quasi-Poisson, porém com a vantagem de
+se adotar uma distribuição para as contagens possibilitando o cálculo de
 probabilidades, por exemplo.
 
 De forma geral, os resultados apresentados pelos modelos COM-Poisson
@@ -1528,7 +1538,6 @@ pode ser útil em casos que a dispersão esteja relacionada às
 covariáveis. Como última sugestão, estudos de simulação para verificar a
 robustez do modelo à má especificação da distribuição da variável
 resposta, serão de grande valia.
-
 
 %-------------------------------------------
 %% Referências
