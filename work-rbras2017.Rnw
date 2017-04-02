@@ -64,7 +64,7 @@
   \footnote[3]{Laboratório de Estatística e Geoinformação (LEG) -
     UFPR}\\
   {\bf Walmes Marques Zeviani} \footnote[2]{
-    Despartamento de Estatística (DEST) - UFPR} \footnotemark[3]\\
+    Departamento de Estatística (DEST) - UFPR} \footnotemark[3]\\
   {\bf Wagner Hugo Bonat} \footnotemark[2] \footnotemark[3]\\
   {\bf Clarice Garcia Borges Demétrio} \footnotemark[1]
 \end{flushright}
