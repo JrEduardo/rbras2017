@@ -252,7 +252,7 @@ getCoefs <- function(model, digits = 3, rownames = NULL) {
                   summary(model)$coef[, c(1, 3)]))
         },
         "mle2" = {
-            glue(summary(model)@coef[, c(1, 3)])
+            glue(bbmle::summary(model)@coef[, c(1, 3)])
         }
     )
     if (!is.null(rownames)) {
@@ -409,74 +409,6 @@ body(panel.cbH)[[14]][[3]][[3]] <-
     quote(panel.lines(xo, lyo, col = col.line, lty = list(...)$lty))
 body(panel.cbH)[[14]][[3]][[4]] <-
     quote(panel.lines(xo, uyo, col = col.line, lty = list(...)$lty))
-
-## ## To get a beewarm plot (descriptive graphics)
-## panel.beeswarm <- function (x, y, subscripts, spread, ...) {
-##     xx <- x
-##     yy <- y
-##     aux <- by(cbind(yy, xx, subscripts), INDICES = xx, FUN = function(i) {
-##         or <- order(i[, 1])
-##         ys <- i[or, 1]
-##         yt <- table(ys)
-##         dv <- sapply(unlist(yt), FUN = function(j) {
-##             seq(from = 1, to = j, length.out = j) - (j + 1)/2
-##         })
-##         if (!is.list(dv)) {
-##             dv <- as.list(dv)
-##         }
-##         xs <- i[or, 2] + spread * do.call(c, dv)
-##         cbind(x = xs, y = ys, subscripts = subscripts[or])
-##     })
-##     aux <- do.call(rbind, aux)
-##     panel.xyplot(aux[, 1], aux[, 2], subscripts = aux[, 3], ...)
-## }
-##
-## ## To draw confidence bands for intervals of prediction
-## panel.cbH <- function (x, y, ly, uy, subscripts,
-##                        col.line = plot.line$col,
-##                        lwd = plot.line$lwd,
-##                        lty = plot.line$lty, ...) {
-##     plot.line <- trellis.par.get("plot.line")
-##     y <- as.numeric(y)
-##     x <- as.numeric(x)
-##     or <- order(x)
-##     ly <- as.numeric(ly[subscripts])
-##     uy <- as.numeric(uy[subscripts])
-##     xo <- x[or]
-##     yo <- y[or]
-##     lyo <- ly[or]
-##     uyo <- uy[or]
-##     panel.lines(xo, lyo, lty = lty, lwd = 1, col = col.line)
-##     panel.lines(xo, uyo, lty = lty, lwd = 1, col = col.line)
-##     panel.xyplot(x, y, subscripts = subscripts, col.line = col.line,
-##                  lwd = lwd, lty = lty, ...)
-## }
-##
-## prepanel.cbH <- function(y, ly, uy, subscripts) {
-##     ly <- as.numeric(ly[subscripts])
-##     uy <- as.numeric(uy[subscripts])
-##     y <- as.numeric(y[subscripts])
-##     list(ylim = range(y, uy, ly, finite = TRUE))
-## }
-##
-## ## To draw confidence bars for intervals of prediction
-## panel.groups.segplot <- function (x, y, z, centers, groups, gap = NULL,
-##                                   data, subscripts, ...) {
-##     if (!missing(data)) {
-##         data <- eval(data, envir = parent.frame())
-##         groups <- data[, deparse(substitute(groups))]
-##     }
-##     stopifnot(is.factor(groups))
-##     stopifnot(length(groups) == length(z))
-##     if (is.null(gap)) {
-##         gap <- 0.5/nlevels(groups)
-##     }
-##     d <- 2 * ((as.numeric(groups) - 1)/(nlevels(groups) - 1)) -
-##         1
-##     z <- as.numeric(z) + gap * d
-##     panel.segplot(x, y, z, centers = centers, subscripts = subscripts,
-##         ...)
-## }
 
 ## To profile log-likelihood
 myprofile <- function(model, which) {

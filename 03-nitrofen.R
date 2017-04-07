@@ -39,9 +39,7 @@ xy1 <- xyplot(novos ~ dose,
               panel = panel.beeswarm)
 
 ## Sample variance vs sample mean (evidence in favor of the
-## underdispersion).
-## Sample variance vs sample mean (evidence in favor of the
-## underdispersion).
+## relationship with dispersion and covariate).
 mv <- aggregate(novos ~ dose, data = nitrofen,
                 FUN = function(x) c(mean = mean(x), var = var(x)))
 xlim <- ylim <- extendrange(c(mv$novos), f = 0.05)
@@ -58,6 +56,7 @@ xy2 <- xyplot(novos[, "var"] ~ novos[, "mean"],
                   panel.abline(a = 0, b = 1, lty = 2)
               })
 
+#+ fig.height=4.5, fig.width=9
 print(xy1, split = c(1, 1, 2, 1), more = TRUE)
 print(xy2, split = c(2, 1, 2, 1), more = FALSE)
 
@@ -65,28 +64,62 @@ print(xy2, split = c(2, 1, 2, 1), more = FALSE)
 ## Fit models
 mnames <- c("PO", "C1", "C2", "QP")
 
-## Predictor
-form <-  novos ~ dose + I(dose^2) + I(dose^3)
+## Predictors
+form31 <-  novos ~ dose
+form32 <-  novos ~ dose + I(dose^2)
+form33 <-  novos ~ dose + I(dose^2) + I(dose^3)
 
-mPO <- glm(form, data = nitrofen, family = poisson)
-mC1 <- fitcm(form, data = nitrofen, model = "CP", sumto = 100)
-mC2 <- fitcm(form, data = nitrofen, model = "CP2", sumto = 100)
-mQP <- glm(form, data = nitrofen, family = quasipoisson)
+predictors <- list("pred1" = form31, "pred2" = form32, "pred3" = form33)
+fmodels.ovos <- lapply(predictors, function(form) {
+    PO <- glm(form, data = nitrofen, family = poisson)
+    C1 <- fitcm(form, data = nitrofen, model = "CP", sumto = 100)
+    C2 <- fitcm(form, data = nitrofen, model = "CP2", sumto = 100)
+    QP <- glm(form, data = nitrofen, family = quasipoisson)
+    list("PO" = PO, "C1" = C1, "C2" = C2, "QP" = QP)
+})
 
-models.novos <- list(mPO, mC1, mC2, mQP)
-names(models.novos) <- mnames
+##----------------------------------------------------------------------
+## LRT for nested models
+
+## Poisson
+auxPO <- lapply(fmodels.ovos, function(x) x$PO)
+do.call("getAnova", auxPO)
+
+## COM-Poisson standard
+auxC1 <- lapply(fmodels.ovos, function(x) x$C1)
+do.call("getAnova", auxC1)
+
+## COM-Poisson mean-parameterized
+auxC2 <- lapply(fmodels.ovos, function(x) x$C2)
+do.call("getAnova", auxC2)
+
+## Quasi-Poisson
+auxQP <- lapply(fmodels.ovos, function(x) x$QP)
+do.call("getAnova", auxQP)
+
+##-------------------------------------------
+## Separe the choose models
+
+form3 <- form33
+m3PO <- fmodels.ovos$pred3$PO
+m3C1 <- fmodels.ovos$pred3$C1
+m3C2 <- fmodels.ovos$pred3$C2
+m3QP <- fmodels.ovos$pred3$QP
+
+models.ovos <- list(m3PO, m3C1, m3C2, m3QP)
+names(models.ovos) <- mnames
 
 ## Numbers of calls to loglik and numerical gradient
-models.novos$C1@details$counts
-models.novos$C2@details$counts
+models.ovos$C1@details$counts
+models.ovos$C2@details$counts
 
 ##----------------------------------------------------------------------
 ## LRT and profile extra parameter
 
 ## LRT between Poisson and COM-Poisson (test: phi == 0)
-getAnova(mPO, mC2)
+getAnova(m3PO, m3C2)
 
-profs.novos <- lapply(list(c(mC1, "phi"), c(mC2, "phi2")),
+profs.novos <- lapply(list(c(m3C1, "phi"), c(m3C2, "phi2")),
                      function(x) myprofile(x[[1]], x[[2]]))
 profs.novos <- do.call("rbind", profs.novos)
 
@@ -103,12 +136,14 @@ xyprofile(profs.novos, namestrip = snames,
 ## Goodness of fit measures and estimate parameters
 
 ## GoF measures
-measures.novos <- sapply(models.novos, function(x)
+measures.ovos <- sapply(models.ovos, function(x)
     c("LogLik" = logLik(x), "AIC" = AIC(x), "BIC" = BIC(x)))
+measures.ovos
 
 ## Get the estimates
-est <- lapply(models.novos, FUN = function(x) getCoefs(x))
-est.novos <- do.call(cbind, est)
+est <- lapply(models.ovos, FUN = function(x) getCoefs(x))
+est.ovos <- do.call(cbind, est)
+est.ovos
 
 ##----------------------------------------------------------------------
 ## Prediction
@@ -120,28 +155,28 @@ pred <- with(nitrofen,
 qn <- qnorm(0.975) * c(fit = 0, lwr = -1, upr = 1)
 
 ## Design matrix for prediction
-X <- model.matrix(update(form, NULL~.), pred)
+X <- model.matrix(update(form3, NULL ~ .), pred)
 
 ## Considering Poisson
 aux <- exp(confint(
-    glht(mPO, linfct = X), calpha = univariate_calpha())$confint)
+    glht(m3PO, linfct = X), calpha = univariate_calpha())$confint)
 colnames(aux) <- c("fit", "lwr", "upr")
 aux <- data.frame(modelo = "Poisson", aux)
 predPO.novos <- cbind(pred, aux)
 
 ## Considering COM-Poisson
-aux <- predictcm(mC1, newdata = X)
+aux <- predictcm(m3C1, newdata = X)
 aux <- data.frame(modelo = "COM-Poisson", aux)
 predC1.novos <- cbind(pred, aux)
 
 ## Considering COM-Poisson (mean parametrization)
-aux <- predictcm(mC2, newdata = X)
+aux <- predictcm(m3C2, newdata = X)
 aux <- data.frame(modelo = "COM-Poisson2", aux)
 predC2.novos <- cbind(pred, aux)
 
 ## Considering Quasi-Poisson
 aux <- exp(confint(
-    glht(mQP, linfct = X), calpha = univariate_calpha())$confint)
+    glht(m3QP, linfct = X), calpha = univariate_calpha())$confint)
 colnames(aux) <- c("fit", "lwr", "upr")
 aux <- data.frame(modelo = "Quasi-Poisson", aux)
 predQP.novos <- cbind(pred, aux)
@@ -160,9 +195,16 @@ key <- list(columns = 2,
                 )
             )
 
+#+ fig.height=4, fig.width=5.5
 ## Graph
-update(xy1, layout = c(NA, 1), type = c("p", "g"),
-       alpha = 0.6, key = key) +
+xyplot(novos ~ dose,
+       data = nitrofen,
+       xlab = "Nível de adubação potássica",
+       ylab = "Número de grãos por parcela",
+       type = c("p", "g"),
+       alpha = 0.6, key = key,
+       spread = 0.05,
+       panel = panel.beeswarm) +
     as.layer(
         xyplot(fit ~ dose,
                auto.key = TRUE,
@@ -179,5 +221,6 @@ update(xy1, layout = c(NA, 1), type = c("p", "g"),
 
 ##----------------------------------------------------------------------
 ## Correlation between estimates
-corr.novos <- purrr::map_df(models.novos[c("C1", "C2")],
+corr.ovos <- purrr::map_df(models.ovos[c("C1", "C2")],
                            function(x) cov2cor(vcov(x))[1, -1])
+corr.ovos

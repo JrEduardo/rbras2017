@@ -1,4 +1,14 @@
 ##----------------------------------------------------------------------
+## Report settings
+library(knitr)
+opts_chunk$set(
+    warning = FALSE,
+    message = FALSE,
+    fig.width = 9,
+    fig.height = 4,
+    dev.args = list(family = "Palatino"))
+
+##----------------------------------------------------------------------
 ## Load the lattice packages and customize outputs graphics
 library(lattice)
 library(latticeExtra)

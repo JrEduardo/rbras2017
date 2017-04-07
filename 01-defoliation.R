@@ -55,6 +55,7 @@ xy2 <- xyplot(ncap[, "var"] ~ ncap[, "mean"],
                   panel.abline(a = 0, b = 1, lty = 2)
               })
 
+#+ fig.height=4.5, fig.width=9
 print(xy1, split = c(1, 1, 2, 1), more = TRUE)
 print(xy2, split = c(2, 1, 2, 1), more = FALSE)
 
@@ -64,14 +65,18 @@ print(xy2, split = c(2, 1, 2, 1), more = FALSE)
 mnames <- c("PO", "C1", "C2", "QP")
 
 ## Predictor, following Zeviani et al. (2014)
-form <- ncap ~ est:(des + I(des^2))
+form1 <- ncap ~ est:(des + I(des^2))
 
-mPO <- glm(form, data = cottonBolls, family = poisson)
-mC1 <- fitcm(form, data = cottonBolls, model = "CP", sumto = 50)
-mC2 <- fitcm(form, data = cottonBolls, model = "CP2", sumto = 50)
-mQP <- glm(form, data = cottonBolls, family = quasipoisson)
+m1PO <- glm(form1, data = cottonBolls, family = poisson)
+system.time(
+    m1C1 <- fitcm(form1, data = cottonBolls, model = "CP", sumto = 50)
+)
+system.time(
+    m1C2 <- fitcm(form1, data = cottonBolls, model = "CP2", sumto = 50)
+)
+m1QP <- glm(form1, data = cottonBolls, family = quasipoisson)
 
-models.ncap <- list(mPO, mC1, mC2, mQP)
+models.ncap <- list(m1PO, m1C1, m1C2, m1QP)
 names(models.ncap) <- mnames
 
 ## Numbers of calls to loglik and numerical gradient
@@ -82,9 +87,9 @@ models.ncap$C2@details$counts
 ## LRT and profile extra parameter
 
 ## LRT between Poisson and COM-Poisson (test: phi == 0)
-getAnova(mPO, mC2)
+getAnova(m1PO, m1C2)
 
-profs.ncap <- lapply(list(c(mC1, "phi"), c(mC2, "phi2")),
+profs.ncap <- lapply(list(c(m1C1, "phi"), c(m1C2, "phi2")),
                      function(x) myprofile(x[[1]], x[[2]]))
 profs.ncap <- do.call("rbind", profs.ncap)
 
@@ -101,10 +106,12 @@ xyprofile(profs.ncap, namestrip = snames,
 ## GoF measures
 measures.ncap <- sapply(models.ncap, function(x)
     c("LogLik" = logLik(x), "AIC" = AIC(x), "BIC" = BIC(x)))
+measures.ncap
 
 ## Get the estimates
 est <- lapply(models.ncap, FUN = function(x) getCoefs(x))
 est.ncap <- do.call(cbind, est)
+est.ncap
 
 ##----------------------------------------------------------------------
 ## Prediction
@@ -118,28 +125,28 @@ pred <- with(cottonBolls,
 qn <- qnorm(0.975) * c(fit = 0, lwr = -1, upr = 1)
 
 ## Design matrix for prediction
-X <- model.matrix(update(form, NULL~.), pred)
+X <- model.matrix(update(form1, NULL~.), pred)
 
 ## Considering Poisson
 aux <- exp(confint(
-    glht(mPO, linfct = X), calpha = univariate_calpha())$confint)
+    glht(m1PO, linfct = X), calpha = univariate_calpha())$confint)
 colnames(aux) <- c("fit", "lwr", "upr")
 aux <- data.frame(modelo = "Poisson", aux)
 predPO.ncap <- cbind(pred, aux)
 
 ## Considering COM-Poisson
-aux <- predictcm(mC1, newdata = X)
+aux <- predictcm(m1C1, newdata = X)
 aux <- data.frame(modelo = "COM-Poisson", aux)
 predC1.ncap <- cbind(pred, aux)
 
 ## Considering COM-Poisson (mean parametrization)
-aux <- predictcm(mC2, newdata = X)
+aux <- predictcm(m1C2, newdata = X)
 aux <- data.frame(modelo = "COM-Poisson2", aux)
 predC2.ncap <- cbind(pred, aux)
 
 ## Considering Quasi-Poisson
 aux <- exp(confint(
-    glht(mQP, linfct = X), calpha = univariate_calpha())$confint)
+    glht(m1QP, linfct = X), calpha = univariate_calpha())$confint)
 colnames(aux) <- c("fit", "lwr", "upr")
 aux <- data.frame(modelo = "Quasi-Poisson", aux)
 predQP.ncap <- cbind(pred, aux)
@@ -153,12 +160,20 @@ key <- list(columns = 2,
             text = list(parse(
                 text = c("'Poisson'", "'COM-Poisson'",
                          "'COM-Poisson'[mu]", "'Quasi-Poisson'"))
-                )
-            )
+                ))
 
+#+ fig.height=3.8, fig.width=8
 ## Graph
-update(xy1, layout = c(NA, 1), type = c("p", "g"),
-       alpha = 0.6, key = key) +
+xyplot(ncap ~ des | est,
+       data = cottonBolls,
+       layout = c(NA, 1),
+       as.table = TRUE,
+       type = c("p", "g"),
+       xlab = "Níveis de desfolha artificial",
+       ylab = "Número de capulhos produzidos",
+       spread = 0.05,
+       alpha = 0.6, key = key,
+       panel = panel.beeswarm) +
     as.layer(
         xyplot(fit ~ des | est,
                auto.key = TRUE,
@@ -179,3 +194,4 @@ update(xy1, layout = c(NA, 1), type = c("p", "g"),
 ## Correlation between estimates
 corr.ncap <- purrr::map_df(models.ncap[c("C1", "C2")],
                            function(x) cov2cor(vcov(x))[1, -1])
+corr.ncap
