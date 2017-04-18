@@ -26,25 +26,7 @@ calc_moments <- Vectorize(FUN = function(mu, phi) {
 ##======================================================================
 ## Negative log-likelihood functions
 
-## Gamma-Count Model
-llgcnt <- function (params, y, X, offset = NULL) {
-    if (is.null(offset)) {
-        offset <- 1L
-    } else {
-        offset <- exp(offset)
-    }
-    alpha <- exp(params[1])
-    eXb <- exp(X %*% params[-1])
-    alpha.eXb <- alpha * eXb
-    alpha.y <- alpha * y
-    ll <- sum(log(
-        pgamma(offset, shape = alpha.y, rate = alpha.eXb) -
-        pgamma(offset, shape = alpha.y + alpha, rate = alpha.eXb)
-    ))
-    return(-ll)
-}
-
-## COM-Poisson Model (Original parametrization)
+## COM-Poisson Model (Original parameterization)
 llcmp <- function (params, y, X, offset = NULL, sumto = NULL) {
     if (!is.null(offset)) {
         stop("This model doesn't support offset yet.")
@@ -61,17 +43,15 @@ llcmp <- function (params, y, X, offset = NULL, sumto = NULL) {
     return(-ll)
 }
 
-## COM-Poisson Model (parametrization of means)
+## COM-Poisson Model (mean-parameterization)
 llcmp2 <- function (params, y, X, offset = NULL, sumto = NULL) {
-    if (is.null(offset)) {
-        offset <- 1L
-    } else {
-        offset <- exp(offset)
+    if (!is.null(offset)) {
+        stop("This model doesn't support offset yet.")
     }
     phi2 <- params[1]
     nu <- exp(phi2)
     ##-------------------------------------------
-    mu <- offset * exp(X %*% params[-1])
+    mu <- exp(X %*% params[-1])
     Xb <- nu * log(mu + (nu - 1)/(2 * nu))
     ##-------------------------------------------
     i <- 0:sumto
@@ -83,26 +63,10 @@ llcmp2 <- function (params, y, X, offset = NULL, sumto = NULL) {
     return(-ll)
 }
 
-## Generalized Poisson Model
-llpgnz <- function (params, y, X, offset = NULL) {
-    if (is.null(offset)) {
-        offset <- 1L
-    } else {
-        offset <- exp(offset)
-    }
-    gamma <- params[1]
-    lambda <- offset * exp(X %*% params[-1])
-    z <- 1 + gamma * lambda
-    w <- 1 + gamma * y
-    ll <- sum(y * (log(lambda) - log(z)) + (y - 1) * log(w) - lambda *
-              (w/z) - lfactorial(y))
-    return(-ll)
-}
-
 ##======================================================================
 ## Framework for fit count models (using bbmle::mle2 function)
 fitcm <- function(formula, data, start = NULL,
-                  model = c("GC", "CP", "PG", "CP2"), ...) {
+                  model = c("CP", "CP2"), ...) {
     dots <- list(...)
     model <- match.arg(model)
     ##-------------------------------------------
@@ -114,19 +78,9 @@ fitcm <- function(formula, data, start = NULL,
     if (is.null(start)) {
         m0 <- glm.fit(x = X, y = y, offset = off, family = poisson())
         start <- c(0, m0$coefficients)
+
     }
     ##-------------------------------------------
-    if (model == "GC") {
-        names(start)[1] <- "alpha"
-        bbmle::parnames(llgcnt) <- names(start)
-        args <- append(
-            list(minuslog = llgcnt, start = start,
-                 data = list(y = y, X = X, offset = off,
-                             model = model),
-                 vecpar = TRUE), dots)
-        fit <- suppressWarnings(
-            do.call(what = bbmle::mle2, args = args))
-    }
     if (model == "CP") {
         names(start)[1] <- "phi"
         bbmle::parnames(llcmp) <- names(start)
@@ -136,18 +90,6 @@ fitcm <- function(formula, data, start = NULL,
             list(minuslog = llcmp, start = start,
                  data = list(y = y, X = X, offset = off,
                              sumto = sumto, model = model),
-                 vecpar = TRUE), dots)
-        fit <- suppressWarnings(
-            do.call(what = bbmle::mle2, args = args))
-    }
-    if (model == "PG") {
-        start[1] <- 0
-        names(start)[1] <- "gamma"
-        bbmle::parnames(llpgnz) <- names(start)
-        args <- append(
-            list(minuslog = llpgnz, start = start,
-                 data = list(y = y, X = X, offset = off,
-                             model = model),
                  vecpar = TRUE), dots)
         fit <- suppressWarnings(
             do.call(what = bbmle::mle2, args = args))
@@ -247,10 +189,6 @@ getCoefs <- function(model, digits = 3, rownames = NULL) {
                 }
             )
         },
-        "negbin" = {
-            glue(rbind(c(model$theta, model$SE.theta),
-                  summary(model)$coef[, c(1, 3)]))
-        },
         "mle2" = {
             glue(bbmle::summary(model)@coef[, c(1, 3)])
         }
@@ -283,8 +221,7 @@ cholV_eta <- function(V, X, b, qn) {
 }
 
 ## Get the means (inverse link function)
-calc_mean <- function(eta, dispersion,
-                      model = c("GC", "CP", "PG", "CP2"),
+calc_mean <- function(eta, dispersion, model = c("CP", "CP2"),
                       tol = 1e-5, offset = NULL, ...) {
     if (is.null(offset)) {
         offset <- 1L
@@ -293,34 +230,6 @@ calc_mean <- function(eta, dispersion,
     names(eta) <- NULL
     names(dispersion) <- NULL
     pars <- data.frame(eta = eta, dispersion = dispersion)
-    ##-------------------------------------------
-    if (model == "GC") {
-        ##-------------------------------------------
-        pars <- transform(pars, lambda = exp(eta),
-                          alpha = exp(dispersion))
-        ##-------------------------------------------
-        ymax <- with(pars, ceiling(max(lambda + 5 * sqrt(lambda/alpha))))
-        etamax <- max(pars$eta)
-        dispersionmin <- min(pars$dispersion)
-        pmax <- exp(
-            -llgcnt(params = c(dispersionmin, etamax), y = ymax, X = 1))
-        while (pmax > tol) {
-            ymax <- ymax + 1
-            pmax <- exp(
-                -llgcnt(params = c(dispersionmin, etamax),
-                        y = ymax, X = 1))
-        }
-        y <- 1:(ymax*offset)
-        estmean <- mapply(lambda = pars$lambda,
-                          alpha = pars$alpha,
-                          MoreArgs = list(y = y),
-                          FUN = function(lambda, alpha, y) {
-                              sum(pgamma(q = offset,
-                                         shape = y * alpha,
-                                         rate = alpha * lambda))
-                          },
-                          SIMPLIFY = TRUE)
-    }
     ##-------------------------------------------
     if (model == "CP") {
         ##-------------------------------------------
@@ -358,12 +267,8 @@ calc_mean <- function(eta, dispersion,
             },
             SIMPLIFY = TRUE)
     }
-    ##-------------------------------------------
-    if (model == "PG") {
-        estmean <- offset * exp(eta)
-    }
     if (model == "CP2") {
-        estmean <- offset * exp(eta)
+        estmean <- exp(eta)
     }
     names(estmean) <- NULL
     return(c(estmean))
