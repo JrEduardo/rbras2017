@@ -10,7 +10,7 @@ setwd("..")
 
 files <- c(
     "General functions" = "functions.R",
-    "Graphics configs" = "config.R",
+    "Graphics configuration" = "config.R",
     "Moments Approximation" = "00-approx.R",
     "Defoliation experiment" = "01-defoliation.R",
     "Soybean experiment" = "02-soyabean.R",
