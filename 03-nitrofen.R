@@ -22,8 +22,10 @@ cols <- trellis.par.get("superpose.line")$col
 ##----------------------------------------------------------------------
 ## Load data
 ## data(nitrofen, package = "boot")
-data(Paula, package = "labestData")
-nitrofen <- PaulaEx4.6.20
+## data(Paula, package = "labestData")
+## nitrofen <- PaulaEx4.6.20
+nitrofen <- read.table("./data/nitrofen.txt",
+                       header = TRUE, sep = "\t")
 nitrofen <- transform(nitrofen, dose = dose/100)
 
 ##----------------------------------------------------------------------

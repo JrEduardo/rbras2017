@@ -21,7 +21,10 @@ cols <- trellis.par.get("superpose.line")$col
 
 ##----------------------------------------------------------------------
 ## Load data
-data(soyaBeans, package = "cmpreg")
+## data(soyaBeans, package = "cmpreg")
+soyaBeans <- read.table("./data/soyaBeans.txt",
+                        header = TRUE, sep = "\t")
+soyaBeans$umid <- as.factor(soyaBeans$umid)
 soyaBeans <- soyaBeans[-74, ] ## Incorrect observation
 soyaBeans <- transform(soyaBeans, K = K/100)
 

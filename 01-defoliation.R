@@ -20,7 +20,9 @@ cols <- trellis.par.get("superpose.line")$col
 
 ##----------------------------------------------------------------------
 ## Load data
-data(cottonBolls, package = "cmpreg")
+## data(cottonBolls, package = "cmpreg")
+cottonBolls <- read.table("./data/cottonBolls.txt",
+                          header = TRUE, sep = "\t")
 str(cottonBolls)
 
 ##----------------------------------------------------------------------
