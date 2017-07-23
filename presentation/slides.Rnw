@@ -1,0 +1,800 @@
+\documentclass[10pt]{beamer}
+
+%=======================================================================
+% General packages
+\usepackage[british]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{multicol}
+\usepackage{mathtools} %% Funcionalidades (como \dcases)
+\usepackage{dsfont}    %% Para \mathds{1} Indicadora
+\usepackage{bm}
+
+%=======================================================================
+% For figures
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+
+%% ======================================================================
+%% Fontes
+\usepackage{mathpazo}
+\usepackage{inconsolata}
+\usepackage{verbatim}
+
+\usefonttheme{professionalfonts}
+\usefonttheme{serif}
+
+%=======================================================================
+% For tables
+\usepackage[bottom]{footmisc}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{tabularx}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\DeclareRobustCommand{\rchi}{{\mathpalette\irchi\relax}}
+\newcommand{\irchi}[2]{\raisebox{\depth}{$#1\chi$}}
+\usepackage{float}
+\makeatletter
+\def\@xfootnote[#1]{%
+  \protected@xdef\@thefnmark{#1}%
+  \@footnotemark\@footnotetext}
+\makeatother
+
+%% ======================================================================
+%% Cores para links
+\definecolor{url}{HTML}{000080}
+\definecolor{run}{HTML}{4A0082}
+\definecolor{col}{HTML}{6180A6}
+\hypersetup{colorlinks, allcolors=., urlcolor=url, runcolor=run}
+
+\setbeamercolor{bibliography entry author}{fg=black}
+\usepackage[alf]{abntex2cite}
+
+%% ======================================================================
+%% Tema e cores do documento
+\usetheme{CambridgeUS}
+\setbeamertemplate{itemize items}[triangle]
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamertemplate{frametitle}{
+  \nointerlineskip
+  \begin{beamercolorbox}[sep=0.3cm, ht=1.8em,
+    wd=\paperwidth]{frametitle}
+    \vbox{}\vskip-2ex%
+    \strut\hspace*{3ex}\Large\bfseries\insertframetitle\strut
+    \vskip-0.8ex%
+  \end{beamercolorbox}
+}
+
+%% Slides em geral
+\setbeamercolor{frametitle}{bg=white, fg=col}
+\setbeamercolor{structure}{fg=col}
+\setbeamercolor{palette primary}{bg=gray!30, fg=col}
+\setbeamercolor{palette tertiary}{bg=col, fg=white}
+\setbeamercolor{footlinecolor}{fg=white,bg=col}
+\setbeamercolor{caption name}{fg=col}
+
+% \setbeamertemplate{frametitle continuation}{[\insertcontinuationcount]}
+\setbeamertemplate{frametitle continuation}{}
+
+%% Slide Inicial
+\setbeamertemplate{title page}[default]
+\setbeamercolor{title}{fg=col}
+\setbeamercolor{author}{fg=black!70}
+\setbeamercolor{institute}{fg=black!70}
+\setbeamercolor{date}{fg=black!70}
+\setbeamerfont{title}{series=\bfseries, size=\Large}
+
+%% ======================================================================
+%% Definição do cabeçalho e rodapé
+\setbeamerfont{headline}{size=\fontsize{5}{5}\selectfont}
+\setbeamertemplate{headline}{\bfseries
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.5\paperwidth, ht=2.2ex, dp=1ex, right,
+      rightskip=1em]{section in head/foot}
+      \hspace*{2ex}\insertsectionhead
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.5\paperwidth, ht=2.2ex, dp=1ex, left,
+      leftskip=1em]{subsection in head/foot}
+      \insertsubsectionhead\hspace*{2ex}
+    \end{beamercolorbox}}
+  \vskip0pt
+}
+
+\setbeamerfont{footline}{size=\fontsize{5}{5}\selectfont}
+\makeatletter
+\setbeamertemplate{footline}{\bfseries
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.3\paperwidth, ht=2.4ex, dp=1ex, right,
+      rightskip=1em]{footlinecolor}
+      \centering \insertshortauthor%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.6\paperwidth, ht=2.4ex, dp=1ex, left,
+      leftskip=1em]{footlinecolor}
+      \hfill\insertshorttitle%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.1\paperwidth, ht=2.4ex, dp=1ex, left,
+      leftskip=1em]{footlinecolor}
+      \centering Slide \insertframenumber
+    \end{beamercolorbox}}
+  \vskip0pt
+}
+\makeatother
+
+%% ======================================================================
+%% Layout do tableofcontents
+\setbeamertemplate{section in toc}{
+  {\color{col} \bfseries\inserttocsectionnumber.}~
+  {\leftskip=0.5em\color{black}\inserttocsection\par}
+}
+
+\setbeamertemplate{subsection in toc}{
+  {\color{col!80}
+  \bfseries\inserttocsectionnumber.\inserttocsubsectionnumber}~
+  \leftskip=2em{\color{black}\inserttocsubsection\par}
+}
+
+%% ======================================================================
+%% Formatando slides para seções e subseções
+\AtBeginSection[]{
+  \begin{frame}[c, allowframebreaks, noframenumbering]
+    \begin{center}
+      \textcolor{col}{\thesection} \\ \vspace{0.3cm}
+      \parbox{0.6\textwidth}{
+        \centering \textcolor{col}{\LARGE \bf \insertsection}}\\
+    \end{center}
+  \end{frame}
+}
+
+\AtBeginSubsection{
+  \begin{frame}[c, allowframebreaks, noframenumbering]
+    \begin{center}
+      \textcolor{col}{\thesection.\thesubsection} \\ \vspace{0.3cm}
+      \parbox{0.6\textwidth}{
+        \centering \textcolor{col!80}{\large \insertsection}\\
+        \centering \textcolor{col}{\Large \bf \insertsubsection}}\\
+    \end{center}
+  \end{frame}
+}
+
+%% ======================================================================
+%% Metadados não disponíveis no YAML com o atual default.tex template
+
+\title[Reparametrization of COM-Poisson Regression Models]{
+  Reparametrization of COM-Poisson Regression Models with Applications
+  in the Analysis of Experimental Count Data}
+
+\author[Eduardo Elias Ribeiro Junior]{
+  Eduardo Elias Ribeiro Junior \inst{1} \inst{2} \\
+  Walmes Marques Zeviani \inst{1} \\
+  Wagner Hugo Bonar \inst{1} \\
+  Clarice Garcia Borges Demétrio \inst{2}
+}
+
+\institute{
+  \inst{1} Statistics and Geoinformation Laboratory (LEG-UFPR) \\
+  \inst{2} Department of Exact Sciences (ESALQ-USP)
+}
+
+% \date{\small
+%   \today \\[0.2cm]
+%   \url{jreduardo@usp.br} | \url{edujrrib@gmail.com}
+% }
+
+\date{\small \today \\[0.2cm]
+  \url{jreduardo@usp.br} | \url{edujrrib@gmail.com}}
+
+<<theme, include=FALSE>>=
+library(knitr)
+thm = knit_theme$get("dusk")
+knit_theme$set(thm)
+@
+
+<<setup, include=FALSE>>=
+
+library(knitr)
+library(xtable)
+options(digits = 3, OutDec = ",",
+        xtable.caption.placement = "top",
+        xtable.booktabs = TRUE,
+        xtable.sanitize.text.function = identity)
+
+opts_chunk$set(
+    warning = FALSE,
+    message = FALSE,
+    echo = FALSE,
+    results = "hide",
+    ## dev = "tikz",
+    fig.width = 7,
+    fig.height = 5,
+    out.width = ".9\\textwidth",
+    fig.align = "center",
+    fig.pos = "h",
+    dev.args = list(family = "Palatino"))
+
+source("../config.R")
+source("../functions.R")
+
+library(bbmle)
+library(multcomp)
+library(plyr)
+
+## Colors for legends
+cols <- trellis.par.get("superpose.line")$col
+
+
+@
+
+\begin{document}
+
+\begin{frame}[plain, noframenumbering]
+  \titlepage
+\end{frame}
+
+\begin{frame}[noframenumbering]{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Background}
+
+\begin{frame}{Count data}
+
+  Random variables that assume non-negative integer values, representing
+  the number of times an event occurs in the observation unit.\\[0.5cm]
+
+  Let $Y$ a counting random variable, so $y=0,1,2,\ldots$\\[0.5cm]
+
+  Examples in experimental researches:
+
+  \begin{itemize}
+    \item number of grains produced by a plant;
+    \item number of fruits produced by a tree;
+    \item number of insects on a particular cell;
+    \item among others;
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Poisson model and limitations}
+
+  \begin{itemize}
+    \item[] {\bf GLM framework \cite{Nelder1972}}
+    \item Suitable for a support of the random variable;
+    \item Efficient algorithm for estimation and inference;
+    \item Relantionship between mean and variance,
+      $E(Y)=\mathrm{var}(Y)$;
+    \item Implemented in many software.
+      \vspace{0.5cm}
+    \item[] {\bf Limitations}
+    \item Overdispersion (more commom), $E(Y)<\mathrm{var}(Y)$
+    \item Underdispersion (less commom), $E(Y)>\mathrm{var}(Y)$
+  \end{itemize}
+
+\end{frame}
+
+% \section{Background}
+
+\begin{frame}{COM-Poisson distribution}
+
+  \begin{itemize}
+    \itemsep7.5pt\parskip0pt\parsep0pt
+  \item Allows for a non-linear decrease in ratios of successive
+    probabilities, $\frac{\Pr(Y=y-1)}{\Pr(Y=y)} = \frac{y^\nu}{\lambda}$;
+  \item Probability mass function \cite{Shmueli2005} takes the form \\
+    \begin{equation} \small
+    \label{eqn:pmf-cmp}
+    \Pr(Y=y \mid \lambda, \nu) = \frac{\lambda^y}{(y!)^\nu Z(\lambda, \nu)}\,,
+    \qquad Z(\lambda, \nu) = \sum_{j=0}^\infty \frac{\lambda^j}{(j!)^\nu}\,,
+  \end{equation}
+    where $\lambda > 0$ and $\nu \geq 0$
+  \item Moments are not available in closed form;
+  \item Expected and variance values can be closely approximeted by
+    \begin{equation}
+  \label{eqn:mean-aprox}
+  E(Y) \approx \lambda^{1/\nu} - \frac{\nu - 1}{2\nu} \qquad
+  \textrm{and} \qquad
+  \mathrm{var}(Y) \approx \frac{\lambda^{1/\nu}}{\nu}
+\end{equation}
+with accurate approximations for $\nu \leq 1$ or $\lambda > 10^\nu$
+\cite{Shmueli2005, Sellers2012}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Study of the moments approximations}
+
+<<compute-approx, cache=TRUE, include=FALSE>>=
+
+##----------------------------------------------------------------------
+## Study the approximation
+
+##-------------------------------------------
+## Mean and variance relationship
+aux <- expand.grid(
+    mu = seq(2, 30, length.out = 50),
+    phi = seq(log(0.3), log(2.5), length.out = 50))
+
+moments <- mapply(FUN = calc_moments,
+                  mu = aux$mu,
+                  phi = aux$phi,
+                  SIMPLIFY = FALSE)
+grid <- cbind(aux, t(do.call(cbind, moments)))
+grid <- transform(grid, va = mu / exp(phi))
+
+@
+
+<<approx-plot, fig.height=4, fig.width=7, fig.cap="Quadratic errors for moments approximation. Dotted lines representing the restriction for good approximations by \\cite{Shmueli2005}.">>=
+
+col <- brewer.pal(n = 8, name = "RdBu")
+myreg <- colorRampPalette(colors = col)
+
+##-------------------------------------------
+## Errors in approximations for E[Y] and V[Y]
+grid <- transform(grid,
+                  emu = (mu - mean)^2,
+                  eva = (va - var)^2)
+
+myreg <- colorRampPalette(c("gray90",  "gray20"))(100)
+xy1 <- levelplot(emu ~ phi + mu, data = grid,
+                 aspect = "fill",
+                 col.regions = myreg,
+                 xlab = expression(log(nu)),
+                 ylab = expression(mu),
+                 sub = "(a) Errors for mean approximation",
+                 colorkey = list(space = "top"),
+                 par.settings = ps2,
+                 panel = function(x, y, z, ...) {
+                     panel.levelplot(x, y, z, ...)
+                     panel.curve(10 - (exp(x) - 1)/(2 * exp(x)),
+                                 lty = 2)
+                     panel.abline(v = 0, lty = 2)
+                 })
+
+xy2 <- levelplot(eva ~ phi + mu, data = grid,
+                 aspect = "fill",
+                 col.regions = myreg,
+                 xlab = expression(log(nu)),
+                 ylab = expression(mu),
+                 sub = "(b) Errors for variance approximation",
+                 colorkey = list(space = "top"),
+                 par.settings = ps2,
+                 panel = function(x, y, z, ...) {
+                     panel.levelplot(x, y, z, ...)
+                     panel.curve(10 - (exp(x) - 1)/(2 * exp(x)),
+                                 lty = 2)
+                     panel.abline(v = 0, lty = 2)
+                 })
+
+print(xy1, split = c(1, 1, 2, 1), more = TRUE)
+print(xy2, split = c(2, 1, 2, 1), more = TRUE)
+
+@
+
+\end{frame}
+
+\begin{frame}{COM-Poisson regression models}
+
+\begin{itemize}
+  \item[] {\bf Model definition}
+  \item Modelling relationship between $E(\bm{Y})$ and $\bm{x}$
+    indirectly \cite{Sellers2010}; \\[-0.5cm]
+    \begin{align*}
+      Y_i \mid & \,\bm{x}_i \sim
+                 \textrm{COM-Poisson}(\lambda_i,\, \nu) \\
+               &\eta(E(Y_i \mid \bm{x}_i)) =
+                 \log(\lambda_i) = \bm{x}_i^t\bm{\beta} &
+    \end{align*}
+  \item[] {\bf Estimation and Inference}
+  \item Obtain parameters estimates by numerical maximization of
+    likelihood;
+  \item Maximization by BFGS algorithm, derivative-free
+    \cite{Nocedal1995};
+  \item Standard errors of coefficients are obtained by Wald method;
+  \item Confidence intervals for $\hat{\mu}_i$ are obtained by delta
+    method.
+\end{itemize}
+
+\end{frame}
+
+\section{Reparametrization}
+
+\begin{frame}{Reparametrized COM-Poisson}
+
+\begin{itemize}
+  \item[] {\bf Reparametrization}
+  \item Introduced new parameter $\mu$, using the mean
+    approximation\\[-0.2cm]
+    \begin{equation}
+      \label{eqn:repar-cmp}
+      \mu = \lambda^{1/\nu} - \frac{\nu - 1}{2\nu}
+      \quad \Rightarrow \quad
+      \lambda = \left (\mu +
+        \frac{(\nu - 1)}{2\nu} \right )^\nu;
+    \end{equation}
+  \item Precision parameter is taken on the log scale, for avoid
+    restrict parametric support\\[-0.3cm]
+    $$\phi = \log(\nu) \Rightarrow \phi \in \mathbb{R}$$\\[0.3cm]
+  \item[] {\bf Probability mass function}
+  \item Replacing $\lambda$ and $\nu$ as function of $\mu$ and $\phi$ in
+    Equation \ref{eqn:pmf-cmp}\\[-0.2cm]
+    \begin{equation}
+      \label{eqn:pmf-cmpmu}
+      \Pr(Y=y \mid \mu, \phi) =
+      \left ( \mu +\frac{ e^\phi-1}{2e^\phi} \right )^{ye^\phi}
+      \frac{(y!)^{-e^\phi}}{Z(\mu, \phi)}.
+    \end{equation}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{COM-Poisson$_\mu$ regression models}
+
+\begin{itemize}
+  \item[] {\bf Model definition}
+  \item Modelling relationship between $E(\bm{Y})$ and $\bm{x}$
+    directly\\[-0.5cm]
+     \begin{align*}
+       Y_i \mid & \,\bm{x}_i \sim
+                  \textrm{COM-Poisson}_\mu(\mu_i,\, \phi) \\
+                &\log(E(Y_i \mid \bm{x}_i)) =
+                  \log(\mu_i) = \bm{x}_i^t\bm{\beta} &
+     \end{align*}
+  \item[] {\bf Estimation and Inference}
+  \item Obtain parameters estimates by numerical maximization of
+    likelihood;
+  \item Maximization by BFGS algorithm, derivative-free
+    \cite{Nocedal1995};
+  \item Standard errors of coefficients are obtained by Wald method;
+  \item Confidence intervals for $\hat{\mu}_i$ are obtained by delta
+    method.
+\end{itemize}
+
+\end{frame}
+
+\section{Case studies}
+
+<<data-cotton, include=FALSE>>=
+
+##----------------------------------------------------------------------
+## Load data
+data(cottonBolls, package = "cmpreg")
+levels(cottonBolls$est) <- c("vegetative", "flower bud", "blossom",
+                             "fig", "cotton boll")
+
+@
+
+<<fit-cotton, cache=TRUE>>=
+
+##----------------------------------------------------------------------
+## Fit models
+mnames <- c("PO", "C1", "C2", "QP")
+
+## Predictor, following Zeviani et al. (2014)
+form1 <- ncap ~ est:(des + I(des^2))
+
+m1PO <- glm(form1, data = cottonBolls, family = poisson)
+time11 <- system.time(
+    m1C1 <- fitcm(form1, data = cottonBolls, model = "CP", sumto = 50)
+)
+time12 <- system.time(
+    m1C2 <- fitcm(form1, data = cottonBolls, model = "CP2", sumto = 50)
+)
+m1QP <- glm(form1, data = cottonBolls, family = quasipoisson)
+
+models.ncap <- list(m1PO, m1C1, m1C2, m1QP)
+names(models.ncap) <- mnames
+
+## Numbers of calls to loglik and numerical gradient
+c11 <- models.ncap$C1@details$counts
+c12 <- models.ncap$C2@details$counts
+
+## ## Profile the extra parameter
+## profs.ncap <- lapply(list(c(m1C1, "phi"), c(m1C2, "phi2")),
+##                      function(x) myprofile(x[[1]], x[[2]]))
+## profs.ncap <- do.call("rbind", profs.ncap)
+
+## LRT between Poisson and COM-Poisson (test: phi == 0)
+lrt.ncap <- getAnova(m1PO, m1C2)
+
+@
+
+\begin{frame}{Artificial defoliation in cotton phenology}
+
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \begin{figure}
+        \includegraphics[scale=0.25]{./images/defoliation}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      {\bf Aim:} to assess the effects of five defoliation levels on the
+      bolls produced at five growth stages;\\[0.2cm]
+      {\bf Design:} factorial 5 $\times$ 5, with 5 replicates;\\[0.2cm]
+      {\bf Experimental unit:} a vase with 2 plants;\\[0.2cm]
+      {\bf Factors:}
+      \begin{itemize} \small
+        \item Artificial defoliation (\texttt{des}):
+          \Sexpr{unique(cottonBolls$des)}
+        \item Growth stage (\texttt{est}):
+          \Sexpr{levels(cottonBolls$est)}
+      \end{itemize}\vspace{0.1cm}
+      {\bf Response variable:} Total number of cotton bolls;\\
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}{Define model}
+
+  {\bf Linear predictor:} {\small following \citeonline{Zeviani2014}}
+  \begin{itemize}
+    \item $\log(\mu_{ij}) = \beta_0 + \beta_{1j} \textrm{def}_i +
+      \beta_{2j} \textrm{def}_i^2$\\[0.1cm]
+    {\small
+    $i$ varies in the levels of artificial defoliation;\\
+    $j$ varies in the levels of growth stages.}
+  \end{itemize}
+
+  \vspace{0.5cm}
+
+  {\bf Models fitted:}
+  \begin{itemize}
+    \item Poisson ($\mu_{ij}$);
+    \item COM-Poisson ($\lambda_{ij}\,,\,\phi$)
+    \item COM-Poisson$_\mu$ ($\mu_{ij}\,,\,\phi$)
+    \item Quasi-Poisson (var$(Y_{ij})=\sigma\mu_{ij}$)
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Parameter estimates}
+
+  \vspace{-0.2cm}
+  \begin{table}[h]
+    \centering
+    \footnotesize
+\caption{Parameter estimates (Est) and ratio between estimate and
+  standard error (SE)}
+\label{tab:coef-cotton}
+\begin{tabularx}{\textwidth}{lCCCCCCCC}
+  \toprule
+  & \multicolumn{2}{c}{Poisson} &
+    \multicolumn{2}{c}{COM-Poisson} &
+    \multicolumn{2}{c}{COM-Poisson$_\mu$} &
+    \multicolumn{2}{c}{Quasi-Poisson} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+<<results-cotton, results="asis">>=
+
+##----------------------------------------------------------------------
+## Goodness of fit measures and estimate parameters
+
+## GoF measures
+measures.ncap <- lapply(models.ncap, function(x)
+    c("LogLik" = logLik(x), "AIC" = AIC(x), "BIC" = BIC(x)))
+
+## Get the estimates
+co1 <- coef(m1C2)
+est <- lapply(models.ncap, FUN = function(x) getCoefs(x))
+est.ncap <- do.call(cbind, est)
+colnames(est.ncap) <- gsub("EP", "SE", colnames(est.ncap))
+
+## Organize in table
+pnames <- c("\\phi\\,,\\,\\sigma", "\\beta_0",
+            paste0("\\beta_{1", 1:5, "}"),
+            paste0("\\beta_{2", 1:5, "}"))
+rownames(est.ncap) <- paste0("$", pnames, "$")
+meds <- apply(do.call(cbind, measures.ncap), 1, function(x) {
+    x <- formatC(x, getOption("digits"), format = "f")
+    x <- gsub("NA", "---", x)
+    paste(paste0("\\multicolumn{2}{c}{", x, "}"),
+          collapse = " & ")
+})
+text_gof <- paste(paste(names(meds), "&", meds),
+                  collapse = "\\\\\n ")
+
+append_gof <- list(
+    pos = list(nrow(est.ncap)),
+    command = paste("\\specialrule{0.01em}{0.3em}{0.3em} \n",
+                    text_gof, "\\\\\n",
+                    "\\bottomrule"))
+print.xtable(xtable(est.ncap, digits = 3,
+                    label = "tab:coef-cotton"),
+             hline.after = 0,
+             only.contents = TRUE,
+             add.to.row = append_gof)
+
+@
+\end{tabularx}
+\end{table}
+
+\end{frame}
+
+\begin{frame}{Predictive curves}
+
+<<pred-cotton, fig.height=3.5, fig.width=8, fig.cap="Curves of predicted values with 95\\% confidence intervals.">>=
+
+##----------------------------------------------------------------------
+## Prediction
+
+## Data for prediction
+pred <- with(cottonBolls,
+             expand.grid(
+                 est = levels(est),
+                 des = seq(min(des), max(des), l = 20)
+             ))
+qn <- qnorm(0.975) * c(fit = 0, lwr = -1, upr = 1)
+
+## Design matrix for prediction
+X <- model.matrix(update(form1, NULL~.), pred)
+
+## Considering Poisson
+aux <- exp(confint(
+    glht(m1PO, linfct = X), calpha = univariate_calpha())$confint)
+colnames(aux) <- c("fit", "lwr", "upr")
+aux <- data.frame(modelo = "Poisson", aux)
+predPO.ncap <- cbind(pred, aux)
+
+## Considering COM-Poisson
+aux <- predictcm(m1C1, newdata = X)
+aux <- data.frame(modelo = "COM-Poisson", aux)
+predC1.ncap <- cbind(pred, aux)
+
+## Considering COM-Poisson (mean parametrization)
+aux <- predictcm(m1C2, newdata = X)
+aux <- data.frame(modelo = "COM-Poisson2", aux)
+predC2.ncap <- cbind(pred, aux)
+
+## Considering Quasi-Poisson
+aux <- exp(confint(
+    glht(m1QP, linfct = X), calpha = univariate_calpha())$confint)
+colnames(aux) <- c("fit", "lwr", "upr")
+aux <- data.frame(modelo = "Quasi-Poisson", aux)
+predQP.ncap <- cbind(pred, aux)
+
+## Representing the confidence intervals
+pred.ncap <- rbind(predPO.ncap, predC1.ncap, predC2.ncap, predQP.ncap)
+
+## Legend
+key <- list(columns = 4,
+            lines = list(col = cols[1:4], lty = rev(1:4)),
+            text = list(parse(
+                text = c("'Poisson'", "'COM-Poisson'",
+                         "'COM-Poisson'[mu]", "'Quasi-Poisson'"))
+                ))
+
+## Graph
+xyplot(ncap ~ des | est,
+       data = cottonBolls,
+       layout = c(NA, 1),
+       as.table = TRUE,
+       type = c("p", "g"),
+       xlab = "Artificial defoliation level",
+       ylab = "Number of bolls produced",
+       spread = 0.05,
+       alpha = 0.6, key = key,
+       panel = panel.beeswarm) +
+    as.layer(
+        xyplot(fit ~ des | est,
+               auto.key = TRUE,
+               data = pred.ncap,
+               groups = modelo,
+               type = "l",
+               layout = c(NA, 1),
+               as.table = TRUE,
+               ly = pred.ncap$lwr, uy = pred.ncap$upr,
+               cty = "bands", fill = "gray80", alpha = 0.1,
+               panel = panel.superpose,
+               panel.groups = panel.cbH,
+               prepanel = cmpreg::prepanel.cbH,
+               lty = rev(1:4))
+    )
+
+@
+
+\end{frame}
+
+\begin{frame}{Additional results}
+
+  \begin{itemize}
+    \item Empirical correlations between $\hat{\phi}$ and
+      $\hat{\bm{\beta}}$ estimators is approximately 0 for reparametrized
+      model.\\[-0.3cm]
+\begin{table}[ht]
+\centering
+\caption{Empirical correlations between dispersion and location parameters estimators.}
+\label{tab:corr-cotton}
+\footnotesize
+\begin{tabularx}{0.8\textwidth}{lCCCCCCCCCCC}
+\toprule
+<<corr-cotton, results="asis">>=
+
+##----------------------------------------------------------------------
+## Correlation between estimates
+corr.ncap <- do.call("rbind",
+                     lapply(models.ncap[c("C1", "C2")],
+                            function(x) cov2cor(vcov(x))[1, -1]))
+
+## Organize on table
+rownames(corr.ncap) <- paste0("COM-Poisson", c("", "$_\\mu$"))
+colnames(corr.ncap) <- gsub("beta", "hat{\\\\beta}", pnames[-1])
+
+print(xtable(formatC(corr.ncap, digits = 3, format = "f")),
+      sanitize.text.function = function(x) {
+          paste0("$\\rotatebox{90}{", x, "}$")},
+      sanitize.rownames.function = identity,
+      sanitize.colnames.function = function(x) sprintf("$%s$", x),
+      only.contents = TRUE,
+)
+
+@
+\end{tabularx}
+\end{table}\vspace{0.4cm}
+
+\item The computational time consuming to fit COM-Poisson was
+  \Sexpr{time11[3]/time12[3]} times the time consuming by
+  COM-Poisson$_\mu$.
+  \end{itemize}
+
+\end{frame}
+
+\section{Final remarks}
+
+\begin{frame}{Conclusions}
+
+\end{frame}
+
+\begin{frame}{Future work}
+
+\end{frame}
+
+\section*{Notes}
+
+\begin{frame}
+
+{\bf Provision}
+
+\begin{itemize}
+  \item \begin{columns}[c]
+      \column{.1\linewidth}
+      \begin{flushright}
+        \includegraphics[height=0.9cm,valign=c]{./images/researchgate-logo}
+      \end{flushright}
+      \column{.8\linewidth}
+      \hspace*{-0.7cm} Full-text article is available on ResearchGate
+      (in portuguese)\\
+      \hspace*{-0.7cm} \url{https://www.researchgate.net/publication/316880329}
+    \end{columns}
+  \item \begin{columns}[c]
+      \column{.1\linewidth}
+      \begin{flushright}
+        \includegraphics[height=0.9cm,valign=c]{./images/github-logo}
+      \end{flushright}
+      \column{.8\linewidth}
+      \hspace*{-0.7cm} All codes (in R) and source files are available
+      on GitHub\\
+      \hspace*{-0.7cm} \url{https://github.com/jreduardo/rbras2017}
+    \end{columns}
+\end{itemize}
+
+\vspace{0.5cm}
+
+{\bf Acknowledgments}
+
+\begin{itemize}
+  \item National Council for Scientific and Technological Development
+    (CNPq), for their support
+\end{itemize}
+
+\end{frame}
+
+\section*{Bibliography}
+\begin{frame}[allowframebreaks]{References}
+  \small
+  \vspace*{-0.5cm}
+  \bibliography{../rbras2017.bib}
+\end{frame}
+
+\end{document}
