@@ -311,7 +311,7 @@ reparametrização consiste na introdução do parâmetro $\mu$ definido como
   \mu = h(\lambda, \nu) = \lambda^{1/\nu} - \frac{\nu - 1}{2\nu}
   \quad \Rightarrow \quad
   \lambda = h^{-1}(\mu, \nu) = \left (\mu +
-    \frac{(\nu + 1)}{2\nu} \right )^\nu.
+    \frac{(\nu - 1)}{2\nu} \right )^\nu.
 \end{equation}
 O parâmetro de precisão da distribuição, denotado por $\nu$, é tomado na
 escala do logaritmo\footnote{Nesse artigo, por simplicidade, denota-se
@@ -414,7 +414,7 @@ xy2 <- levelplot(emu ~ phi + mu, data = grid,
                  par.settings = ps2,
                  panel = function(x, y, z, ...) {
                      panel.levelplot(x, y, z, ...)
-                     panel.curve(10 - ( exp(x) - 1)/(2 * exp(x)),
+                     panel.curve(10 - (exp(x) - 1)/(2 * exp(x)),
                                  lty = 2)
                      panel.abline(v = 0, lty = 2)
                  })
@@ -429,8 +429,8 @@ xy3 <- levelplot(eva ~ phi + mu, data = grid,
                  par.settings = ps2,
                  panel = function(x, y, z, ...) {
                      panel.levelplot(x, y, z, ...)
-                     panel.curve((10 - ( exp(x) - 1)/
-                                  (2 * exp(x)))/exp(x), lty = 2)
+                     panel.curve(10 - (exp(x) - 1)/(2 * exp(x)),
+                                 lty = 2)
                      panel.abline(v = 0, lty = 2)
                  })
 
