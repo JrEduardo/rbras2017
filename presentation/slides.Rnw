@@ -210,7 +210,7 @@ opts_chunk$set(
     ## dev = "tikz",
     fig.width = 7,
     fig.height = 5,
-    out.width = ".9\\textwidth",
+    out.width = "\\textwidth",
     fig.align = "center",
     fig.pos = "h",
     dev.args = list(family = "Palatino"))
@@ -268,7 +268,7 @@ cols <- trellis.par.get("superpose.line")$col
       $E(Y)=\mathrm{var}(Y)$;
     \item Implemented in many software.
       \vspace{0.5cm}
-    \item[] {\bf Limitations}
+    \item[] {\bf Main limitations}
     \item Overdispersion (more commom), $E(Y)<\mathrm{var}(Y)$
     \item Underdispersion (less commom), $E(Y)>\mathrm{var}(Y)$
   \end{itemize}
@@ -326,7 +326,7 @@ grid <- transform(grid, va = mu / exp(phi))
 
 @
 
-<<approx-plot, fig.height=4, fig.width=7, fig.cap="Quadratic errors for moments approximation. Dotted lines representing the restriction for good approximations by \\cite{Shmueli2005}.">>=
+<<approx-plot, out.width="0.9\\textwidth", fig.height=4, fig.width=7, fig.cap="Quadratic errors for moments approximation. Dotted lines representing the restriction for good approximations by \\cite{Shmueli2005}.">>=
 
 col <- brewer.pal(n = 8, name = "RdBu")
 myreg <- colorRampPalette(colors = col)
@@ -387,14 +387,6 @@ print(xy2, split = c(2, 1, 2, 1), more = TRUE)
                &\eta(E(Y_i \mid \bm{x}_i)) =
                  \log(\lambda_i) = \bm{x}_i^t\bm{\beta} &
     \end{align*}
-  \item[] {\bf Estimation and Inference}
-  \item Obtain parameters estimates by numerical maximization of
-    likelihood;
-  \item Maximization by BFGS algorithm, derivative-free
-    \cite{Nocedal1995};
-  \item Standard errors of coefficients are obtained by Wald method;
-  \item Confidence intervals for $\hat{\mu}_i$ are obtained by delta
-    method.
 \end{itemize}
 
 \end{frame}
@@ -427,6 +419,64 @@ print(xy2, split = c(2, 1, 2, 1), more = TRUE)
       \frac{(y!)^{-e^\phi}}{Z(\mu, \phi)}.
     \end{equation}
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}{COM-Poisson$_\mu$ distribution}
+
+<<pmf-cmp, fig.height=3, fig.width=7, fig.cap="Probabilities from COM-Poisson distributions with different parameters.">>=
+
+##----------------------------------------------------------------------
+## COM-Poisson probability mass function (mean parametrization)
+dcmp <- Vectorize(FUN = function(y, mu, phi, sumto = 100)
+    exp(-llcmp2(c(phi, log(mu)), y = y, X = 1, sumto = sumto)),
+    vectorize.args = c("y", "mu", "phi"))
+
+grid <- expand.grid(mu = c(2, 8, 15), phi = log(c(0.5, 1, 2.5)))
+y <- 0:30
+py <- mapply(FUN = dcmp,
+             mu = grid$mu,
+             phi = grid$phi,
+             MoreArgs = list(y = y, sumto = 100),
+             SIMPLIFY = FALSE)
+grid <- cbind(grid[rep(1:nrow(grid), each = length(y)), ],
+              y = y,
+              py = unlist(py))
+
+## COM-Poisson p.m.f. to different combination betwenn phi and mu
+leg_phi <- parse(
+    text = paste("phi == \"",
+                 formatC(unique(grid$phi), 1, format = "f"),
+                 "\""))
+barchart(py ~ y | factor(mu),
+         groups = factor(phi),
+         data = grid,
+         horizontal = FALSE,
+         layout = c(NA, 1),
+         as.table = TRUE,
+         axis = axis.grid,
+         origin = 0,
+         xlim = extendrange(y, f = 0.01),
+         border = "transparent",
+         scales = list(x = list(at = pretty(y))),
+         ylab = expression(P(Y==y)),
+         xlab = expression(y),
+         par.settings = list(
+             superpose.polygon = list(col = c(mycol[2:4])),
+             superpose.line = list(col = c(mycol[2:4]))
+         ),
+         auto.key = list(
+             columns = 3,
+             rectangles = FALSE,
+             lines = TRUE,
+             text = leg_phi
+         ),
+         strip = strip.custom(
+             strip.names = TRUE,
+             var.name = expression(mu == ""),
+             sep = ""))
+
+@
 
 \end{frame}
 
@@ -742,12 +792,35 @@ print(xtable(formatC(corr.ncap, digits = 3, format = "f")),
 
 \section{Final remarks}
 
-\begin{frame}{Conclusions}
+\begin{frame}{Concluding remarks}
 
-\end{frame}
+  {\bf Summary}
 
-\begin{frame}{Future work}
+  \begin{itemize}
+    \item Over/under-dispersion need caution;
+    \item COM-Poisson is a suitable distribution for this situations;
+    \item The proposed reparametrization, COM-Poisson$_\mu$ has some
+      advantages:
+      \begin{itemize}
+        \item Simple transformation of the parametric space;
+        \item Full parametric approach (likelihood-based inference);
+        \item Correlation among the estimators was practically null;
+        \item Faster computational times;
+        \item Allows interpretation of the coefficients directly (like
+          GLM-Poisson model).
+      \end{itemize}
+  \end{itemize}
 
+  {\bf Future work}
+
+  \begin{itemize}
+    \item Simulation study for assessment model robustness in terms of
+      bad specification of the distribution;
+    \item Assessment of theoretical approximations for $Z(\lambda, \nu)$
+      (or $Z(\mu, \phi)$), may be useful in avoiding the requirement to
+      select an upper bound sum;
+    \item Modelling location and dispersion parameters jointly.
+  \end{itemize}
 \end{frame}
 
 \section*{Notes}
