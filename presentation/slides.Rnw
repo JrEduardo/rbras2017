@@ -170,7 +170,7 @@
 \author[Eduardo Elias Ribeiro Junior]{
   Eduardo Elias Ribeiro Junior \inst{1} \inst{2} \\
   Walmes Marques Zeviani \inst{1} \\
-  Wagner Hugo Bonar \inst{1} \\
+  Wagner Hugo Bonat \inst{1} \\
   Clarice Garcia Borges Demétrio \inst{2}
 }
 
@@ -178,11 +178,6 @@
   \inst{1} Statistics and Geoinformation Laboratory (LEG-UFPR) \\
   \inst{2} Department of Exact Sciences (ESALQ-USP)
 }
-
-% \date{\small
-%   \today \\[0.2cm]
-%   \url{jreduardo@usp.br} | \url{edujrrib@gmail.com}
-% }
 
 \date{\small \today \\[0.2cm]
   \url{jreduardo@usp.br} | \url{edujrrib@gmail.com}}
@@ -197,7 +192,7 @@ knit_theme$set(thm)
 
 library(knitr)
 library(xtable)
-options(digits = 3, OutDec = ",",
+options(digits = 3, OutDec = ".",
         xtable.caption.placement = "top",
         xtable.booktabs = TRUE,
         xtable.sanitize.text.function = identity)
@@ -225,7 +220,6 @@ library(plyr)
 ## Colors for legends
 cols <- trellis.par.get("superpose.line")$col
 
-
 @
 
 \begin{document}
@@ -242,10 +236,11 @@ cols <- trellis.par.get("superpose.line")$col
 
 \begin{frame}{Count data}
 
-  Random variables that assume non-negative integer values, representing
-  the number of times an event occurs in the observation unit.\\[0.5cm]
+  Number of times an event occurs in the observation unit.\\[0.3cm]
 
-  Let $Y$ a counting random variable, so $y=0,1,2,\ldots$\\[0.5cm]
+  Random variables that assume non-negative integer values.\\[0.3cm]
+
+  Let $Y$ be a counting random variable, so that $y=0,1,2,\ldots$\\[0.5cm]
 
   Examples in experimental researches:
 
@@ -253,7 +248,7 @@ cols <- trellis.par.get("superpose.line")$col
     \item number of grains produced by a plant;
     \item number of fruits produced by a tree;
     \item number of insects on a particular cell;
-    \item among others;
+    \item others.
   \end{itemize}
 
 \end{frame}
@@ -262,45 +257,97 @@ cols <- trellis.par.get("superpose.line")$col
 
   \begin{itemize}
     \item[] {\bf GLM framework \cite{Nelder1972}}
-    \item Suitable for a support of the random variable;
+    \item Provide suitable distribution for a counting random variables;
     \item Efficient algorithm for estimation and inference;
-    \item Relantionship between mean and variance,
-      $E(Y)=\mathrm{var}(Y)$;
     \item Implemented in many software.
       \vspace{0.5cm}
+    \item[] {\bf Poisson model}
+    \item Relationship between mean and variance,
+      $E(Y)=\mathrm{var}(Y)$;
+      \vspace{0.5cm}
     \item[] {\bf Main limitations}
-    \item Overdispersion (more commom), $E(Y)<\mathrm{var}(Y)$
-    \item Underdispersion (less commom), $E(Y)>\mathrm{var}(Y)$
+    \item Overdispersion (more common), $E(Y)<\mathrm{var}(Y)$
+    \item Underdispersion (less common), $E(Y)>\mathrm{var}(Y)$
   \end{itemize}
 
 \end{frame}
-
-% \section{Background}
 
 \begin{frame}{COM-Poisson distribution}
 
   \begin{itemize}
     \itemsep7.5pt\parskip0pt\parsep0pt
-  \item Allows for a non-linear decrease in ratios of successive
-    probabilities, $\frac{\Pr(Y=y-1)}{\Pr(Y=y)} = \frac{y^\nu}{\lambda}$;
   \item Probability mass function \cite{Shmueli2005} takes the form \\
     \begin{equation} \small
     \label{eqn:pmf-cmp}
     \Pr(Y=y \mid \lambda, \nu) = \frac{\lambda^y}{(y!)^\nu Z(\lambda, \nu)}\,,
     \qquad Z(\lambda, \nu) = \sum_{j=0}^\infty \frac{\lambda^j}{(j!)^\nu}\,,
   \end{equation}
-    where $\lambda > 0$ and $\nu \geq 0$
+    where $\lambda > 0$ and $\nu \geq 0$.
   \item Moments are not available in closed form;
-  \item Expected and variance values can be closely approximeted by
-    \begin{equation}
-  \label{eqn:mean-aprox}
-  E(Y) \approx \lambda^{1/\nu} - \frac{\nu - 1}{2\nu} \qquad
-  \textrm{and} \qquad
-  \mathrm{var}(Y) \approx \frac{\lambda^{1/\nu}}{\nu}
-\end{equation}
-with accurate approximations for $\nu \leq 1$ or $\lambda > 10^\nu$
-\cite{Shmueli2005, Sellers2012}
+  \item Expectation and variance can be closely approximated by
+    \begin{equation*}
+      \label{eqn:mean-aprox}
+      E(Y) \approx \lambda^{1/\nu} - \frac{\nu - 1}{2\nu} \qquad
+      \textrm{and} \qquad
+      \mathrm{var}(Y) \approx \frac{\lambda^{1/\nu}}{\nu}
+    \end{equation*}
+    with accurate approximations for $\nu \leq 1$ or $\lambda > 10^\nu$
+    \cite{Shmueli2005, Sellers2012}.
   \end{itemize}
+
+\end{frame}
+
+\begin{frame}{COM-Poisson regression models}
+
+\begin{itemize}
+  \item[] {\bf Model definition}
+  \item Modelling the relationship between $E(Y_i)$ and $\bm{x}_i$
+    indirectly \cite{Sellers2010}; \\[-0.5cm]
+    \begin{align*}
+      Y_i \mid & \,\bm{x}_i \sim
+                 \textrm{COM-Poisson}(\lambda_i,\, \nu) \\
+               &\eta(E(Y_i \mid \bm{x}_i)) =
+                 \log(\lambda_i) = \bm{x}_i^\top\bm{\beta} &
+    \end{align*}
+\end{itemize} \vspace{0.8cm}
+
+\begin{itemize}
+  \item[] {\bf Main goal}
+  \item Propose a reparametrization in order to model the expectation of
+    the response variable as a function of the covariate values
+    directly.
+\end{itemize}
+
+\end{frame}
+
+\section{Reparametrization}
+
+\begin{frame}{Reparametrized COM-Poisson}
+
+\begin{itemize}
+  \item[] {\bf Reparametrization}
+  \item Introduced new parameter $\mu$, using the mean
+    approximation\\[-0.2cm]
+    \begin{equation*}
+      \label{eqn:repar-cmp}
+      \mu = \lambda^{1/\nu} - \frac{\nu - 1}{2\nu}
+      \quad \Rightarrow \quad
+      \lambda = \left (\mu +
+        \frac{(\nu - 1)}{2\nu} \right )^\nu;
+    \end{equation*}
+  \item Precision parameter is taken on the log scale to avoid
+    restrictions on the parameter space\\[-0.3cm]
+    $$\phi = \log(\nu) \Rightarrow \phi \in \mathbb{R}$$\\[0.3cm]
+  \item[] {\bf Probability mass function}
+  \item Replacing $\lambda$ and $\nu$ as function of $\mu$ and $\phi$ in
+    Equation \ref{eqn:pmf-cmp}\\[-0.2cm]
+    \begin{equation*}
+      \label{eqn:pmf-cmpmu}
+      \Pr(Y=y \mid \mu, \phi) =
+      \left ( \mu +\frac{ e^\phi-1}{2e^\phi} \right )^{ye^\phi}
+      \frac{(y!)^{-e^\phi}}{Z(\mu, \phi)}.
+    \end{equation*}
+\end{itemize}
 
 \end{frame}
 
@@ -341,7 +388,7 @@ myreg <- colorRampPalette(c("gray90",  "gray20"))(100)
 xy1 <- levelplot(emu ~ phi + mu, data = grid,
                  aspect = "fill",
                  col.regions = myreg,
-                 xlab = expression(log(nu)),
+                 xlab = expression(phi),
                  ylab = expression(mu),
                  sub = "(a) Errors for mean approximation",
                  colorkey = list(space = "top"),
@@ -356,7 +403,7 @@ xy1 <- levelplot(emu ~ phi + mu, data = grid,
 xy2 <- levelplot(eva ~ phi + mu, data = grid,
                  aspect = "fill",
                  col.regions = myreg,
-                 xlab = expression(log(nu)),
+                 xlab = expression(phi),
                  ylab = expression(mu),
                  sub = "(b) Errors for variance approximation",
                  colorkey = list(space = "top"),
@@ -375,56 +422,9 @@ print(xy2, split = c(2, 1, 2, 1), more = TRUE)
 
 \end{frame}
 
-\begin{frame}{COM-Poisson regression models}
-
-\begin{itemize}
-  \item[] {\bf Model definition}
-  \item Modelling relationship between $E(\bm{Y})$ and $\bm{x}$
-    indirectly \cite{Sellers2010}; \\[-0.5cm]
-    \begin{align*}
-      Y_i \mid & \,\bm{x}_i \sim
-                 \textrm{COM-Poisson}(\lambda_i,\, \nu) \\
-               &\eta(E(Y_i \mid \bm{x}_i)) =
-                 \log(\lambda_i) = \bm{x}_i^t\bm{\beta} &
-    \end{align*}
-\end{itemize}
-
-\end{frame}
-
-\section{Reparametrization}
-
-\begin{frame}{Reparametrized COM-Poisson}
-
-\begin{itemize}
-  \item[] {\bf Reparametrization}
-  \item Introduced new parameter $\mu$, using the mean
-    approximation\\[-0.2cm]
-    \begin{equation}
-      \label{eqn:repar-cmp}
-      \mu = \lambda^{1/\nu} - \frac{\nu - 1}{2\nu}
-      \quad \Rightarrow \quad
-      \lambda = \left (\mu +
-        \frac{(\nu - 1)}{2\nu} \right )^\nu;
-    \end{equation}
-  \item Precision parameter is taken on the log scale, for avoid
-    restrict parametric support\\[-0.3cm]
-    $$\phi = \log(\nu) \Rightarrow \phi \in \mathbb{R}$$\\[0.3cm]
-  \item[] {\bf Probability mass function}
-  \item Replacing $\lambda$ and $\nu$ as function of $\mu$ and $\phi$ in
-    Equation \ref{eqn:pmf-cmp}\\[-0.2cm]
-    \begin{equation}
-      \label{eqn:pmf-cmpmu}
-      \Pr(Y=y \mid \mu, \phi) =
-      \left ( \mu +\frac{ e^\phi-1}{2e^\phi} \right )^{ye^\phi}
-      \frac{(y!)^{-e^\phi}}{Z(\mu, \phi)}.
-    \end{equation}
-\end{itemize}
-
-\end{frame}
-
 \begin{frame}{COM-Poisson$_\mu$ distribution}
 
-<<pmf-cmp, fig.height=3, fig.width=7, fig.cap="Probabilities from COM-Poisson distributions with different parameters.">>=
+<<pmf-cmp, fig.height=3, fig.width=7, fig.cap="Shapes of the COM-Poisson distribution for different parameter values.">>=
 
 ##----------------------------------------------------------------------
 ## COM-Poisson probability mass function (mean parametrization)
@@ -484,20 +484,19 @@ barchart(py ~ y | factor(mu),
 
 \begin{itemize}
   \item[] {\bf Model definition}
-  \item Modelling relationship between $E(\bm{Y})$ and $\bm{x}$
+  \item Modelling relationship between $E(Y_i)$ and $\bm{x}_i$
     directly\\[-0.5cm]
      \begin{align*}
        Y_i \mid & \,\bm{x}_i \sim
                   \textrm{COM-Poisson}_\mu(\mu_i,\, \phi) \\
                 &\log(E(Y_i \mid \bm{x}_i)) =
-                  \log(\mu_i) = \bm{x}_i^t\bm{\beta} &
+                  \log(\mu_i) = \bm{x}_i^\top\bm{\beta} &
      \end{align*}
   \item[] {\bf Estimation and Inference}
-  \item Obtain parameters estimates by numerical maximization of
-    likelihood;
-  \item Maximization by BFGS algorithm, derivative-free
-    \cite{Nocedal1995};
-  \item Standard errors of coefficients are obtained by Wald method;
+  \item Parameter estimates are obtained by numerical maximization of
+    the log-likelihood function (by BFGS algorithm);
+  \item Standard errors for regression coefficients are obtained based on
+    the observed information matrix;
   \item Confidence intervals for $\hat{\mu}_i$ are obtained by delta
     method.
 \end{itemize}
@@ -563,7 +562,7 @@ lrt.ncap <- getAnova(m1PO, m1C2)
       {\bf Aim:} to assess the effects of five defoliation levels on the
       bolls produced at five growth stages;\\[0.2cm]
       {\bf Design:} factorial 5 $\times$ 5, with 5 replicates;\\[0.2cm]
-      {\bf Experimental unit:} a vase with 2 plants;\\[0.2cm]
+      {\bf Experimental unit:} a plot with 2 plants;\\[0.2cm]
       {\bf Factors:}
       \begin{itemize} \small
         \item Artificial defoliation (\texttt{des}):
@@ -577,7 +576,7 @@ lrt.ncap <- getAnova(m1PO, m1C2)
 
 \end{frame}
 
-\begin{frame}{Define model}
+\begin{frame}{Model specification}
 
   {\bf Linear predictor:} {\small following \citeonline{Zeviani2014}}
   \begin{itemize}
@@ -590,10 +589,11 @@ lrt.ncap <- getAnova(m1PO, m1C2)
 
   \vspace{0.5cm}
 
-  {\bf Models fitted:}
+  {\bf Alternative models:}
+  % {\bf Modelling strategies:}
   \begin{itemize}
     \item Poisson ($\mu_{ij}$);
-    \item COM-Poisson ($\lambda_{ij}\,,\,\phi$)
+    \item COM-Poisson ($\lambda_{ij}=\eta(\mu_{ij})\,,\,\phi$)
     \item COM-Poisson$_\mu$ ($\mu_{ij}\,,\,\phi$)
     \item Quasi-Poisson (var$(Y_{ij})=\sigma\mu_{ij}$)
   \end{itemize}
@@ -662,9 +662,9 @@ print.xtable(xtable(est.ncap, digits = 3,
 
 \end{frame}
 
-\begin{frame}{Predictive curves}
+\begin{frame}{Fitted curves}
 
-<<pred-cotton, fig.height=3.5, fig.width=8, fig.cap="Curves of predicted values with 95\\% confidence intervals.">>=
+<<pred-cotton, fig.height=3.5, fig.width=8, fig.cap="Curves of fitted values with 95\\% confidence intervals.">>=
 
 ##----------------------------------------------------------------------
 ## Prediction
@@ -751,13 +751,15 @@ xyplot(ncap ~ des | est,
   \begin{itemize}
     \item Empirical correlations between $\hat{\phi}$ and
       $\hat{\bm{\beta}}$ estimators is approximately 0 for reparametrized
-      model.\\[-0.3cm]
+      model.
+\end{itemize}\vspace{-0.5cm}
+\setlength{\tabcolsep}{2.5pt}
 \begin{table}[ht]
 \centering
 \caption{Empirical correlations between dispersion and location parameters estimators.}
 \label{tab:corr-cotton}
 \footnotesize
-\begin{tabularx}{0.8\textwidth}{lCCCCCCCCCCC}
+\begin{tabular*}{0.98\textwidth}{lccccccccccc}
 \toprule
 <<corr-cotton, results="asis">>=
 
@@ -771,22 +773,31 @@ corr.ncap <- do.call("rbind",
 rownames(corr.ncap) <- paste0("COM-Poisson", c("", "$_\\mu$"))
 colnames(corr.ncap) <- gsub("beta", "hat{\\\\beta}", pnames[-1])
 
+
+# print(xtable(formatC(corr.ncap, digits = 3, format = "f")),
+#       sanitize.text.function = function(x) {
+#           paste0("$\\rotatebox{90}{", x, "}$")},
+#       sanitize.rownames.function = identity,
+#       sanitize.colnames.function = function(x) sprintf("$%s$", x),
+#       only.contents = TRUE,
+# )
+
 print(xtable(formatC(corr.ncap, digits = 3, format = "f")),
-      sanitize.text.function = function(x) {
-          paste0("$\\rotatebox{90}{", x, "}$")},
+      # sanitize.text.function = function(x) {
+      #     paste0("$\\rotatebox{90}{", x, "}$")},
       sanitize.rownames.function = identity,
       sanitize.colnames.function = function(x) sprintf("$%s$", x),
       only.contents = TRUE,
 )
 
 @
-\end{tabularx}
+\end{tabular*}
 \end{table}\vspace{0.4cm}
 
-\item The computational time consuming to fit COM-Poisson was
-  \Sexpr{time11[3]/time12[3]} times the time consuming by
-  COM-Poisson$_\mu$.
-  \end{itemize}
+\begin{itemize}
+  \item COM-Poisson fit was \Sexpr{(time11[3]/time12[3] - 1)*100}\%
+    slower than COM-Poisson$_\mu$;
+\end{itemize}
 
 \end{frame}
 
@@ -797,15 +808,15 @@ print(xtable(formatC(corr.ncap, digits = 3, format = "f")),
   {\bf Summary}
 
   \begin{itemize}
-    \item Over/under-dispersion need caution;
-    \item COM-Poisson is a suitable distribution for this situations;
+    \item Over/under-dispersion needs caution;
+    \item COM-Poisson is a suitable choice for these situations;
     \item The proposed reparametrization, COM-Poisson$_\mu$ has some
       advantages:
       \begin{itemize}
-        \item Simple transformation of the parametric space;
-        \item Full parametric approach (likelihood-based inference);
-        \item Correlation among the estimators was practically null;
-        \item Faster computational times;
+        \item Simple transformation of the parameter space;
+        \item Full parametric approach;
+        \item Correlation between the estimators was practically null;
+        \item Faster for fitting;
         \item Allows interpretation of the coefficients directly (like
           GLM-Poisson model).
       \end{itemize}
@@ -814,20 +825,18 @@ print(xtable(formatC(corr.ncap, digits = 3, format = "f")),
   {\bf Future work}
 
   \begin{itemize}
-    \item Simulation study for assessment model robustness in terms of
-      bad specification of the distribution;
-    \item Assessment of theoretical approximations for $Z(\lambda, \nu)$
-      (or $Z(\mu, \phi)$), may be useful in avoiding the requirement to
-      select an upper bound sum;
-    \item Modelling location and dispersion parameters jointly.
+    \item Simulation study to assess model robustness against
+      distribution miss specification;
+    \item Assess theoretical approximations for $Z(\lambda, \nu)$
+      (or $Z(\mu, \phi)$), in order to avoid the selection of sum's
+      upper bound;
+    \item Propose a double GLM based on the COM-Poisson$_\mu$ model.
   \end{itemize}
 \end{frame}
 
 \section*{Notes}
 
 \begin{frame}
-
-{\bf Provision}
 
 \begin{itemize}
   \item \begin{columns}[c]
@@ -857,8 +866,17 @@ print(xtable(formatC(corr.ncap, digits = 3, format = "f")),
 {\bf Acknowledgments}
 
 \begin{itemize}
-  \item National Council for Scientific and Technological Development
-    (CNPq), for their support
+    \item \begin{columns}[c]
+      \column{.1\linewidth}
+      \begin{flushright}
+        \includegraphics[height=0.9cm,valign=c]{./images/cnpq-logo}
+      \end{flushright}
+      \column{.8\linewidth} \vspace{-0.3cm}
+      \hspace*{-0.7cm}\begin{minipage}[c]{\textwidth}
+       National Council for Scientific and Technological Development
+       (CNPq), for their support.\\
+      \end{minipage}
+    \end{columns}
 \end{itemize}
 
 \end{frame}
